@@ -4,7 +4,9 @@ const express = require('express'),
     routes = require('./routes/routers'),
     cors = require('cors')
     morgan = require('morgan'),
-    logger = require('./config/logger');
+    logger = require('./config/logger'),
+    connection = require('./projects/unity/config/connection'),
+    unitmodel = require('./projects/unity/models/tables');
 
 const app = express();
 
@@ -25,6 +27,8 @@ app.use((err,req,res,next) =>{
 });
 
 
+connection.init();
+unitmodel.create();
 
 app.use('/api', routes);
 

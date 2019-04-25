@@ -7,7 +7,7 @@ var cookieParser = require('cookie-parser')
 
 var app = express();
 
-app.set('superSecret', process.env.CHEM_JWT_SECRET); // secret variable
+app.set('superSecret', process.env.jwt_secret); // secret variable
 
 app.use(cookieParser())
 

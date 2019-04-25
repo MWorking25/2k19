@@ -1,15 +1,18 @@
 var mysql = require('mysql');
 var mysqlDump = require('mysqldump');
 function Connection() {
-		this.pool = null
-  this.pool = mysql.createPool({
-    connectionLimit: 100,
-    multipleStatements: true,
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
-  });
+    this.pool = null
+  this.init = function()
+  {
+    this.pool = mysql.createPool({
+      connectionLimit: 100,
+      multipleStatements: true,
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME
+    });
+  }
 
   this.acquire = function (callback) {
     this.pool.getConnection(function (err, connection) {
