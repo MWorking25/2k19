@@ -30,6 +30,25 @@ app.use((err,req,res,next) =>{
 connection.init();
 unitmodel.create();
 
+
+const domainPing = require("domain-ping");
+ 
+domainPing('103.252.7.90') // Insert the domain you want to ping
+    .then((res) => {
+        console.log(res); // Replace with your code
+    })
+    .catch((error) => {
+        console.error(error);
+    });
+
+    const isPortReachable = require('is-port-reachable');
+ 
+(async () => {
+    console.log(await isPortReachable(23, {host: '172.172.172.228'}));
+    //=> true
+})();
+
+
 app.use('/api', routes);
 
 var server = app.listen(parseInt(env.port), function () {
