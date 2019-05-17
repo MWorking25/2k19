@@ -24,71 +24,70 @@ encrypt = function (text) {
 };
 
 
-exports.AuthenticateUser = function (req, res) {
-    var hashedString = encrypt(req.body.password);
-    connection.Connect();
-    user.find({
-        'practice.name': req.body.practicename,
-        'practice.status': "active",
-        'username': req.body.username,
-        'hashedString': hashedString
-    }, {
-        practice: 1,
-        username: 1
-    }).exec((err, result) => {
-        if (err) {
-            logger.writeLogs({
-                path: "users.controller/listSalespersons",
-                line: "16",
-                message: err
-            }, 'error');
-            res.send({
-                status: 0,
-                message: "Somthing went wrong"
-            });
-            connection.disconnect();
-        } else {
+exports.authenticateUser = function (req, res) {
+    if (req.tokenApprove === true) {
+        var hashedString = encrypt(req.body.password);
+        console.log(hashedString);
+        connection.acquire(function (err, con) {
+            con.query('SELECT `id`,`name`,`role`,`profilepic`,`status` FROM `users` WHERE `email` =? AND `password` =?', [req.body.email, hashedString], function (err, result) {
+                if (err) {
+                    logger.writeLogs({
+                        path: "users.controller/authenticateUser",
+                        line: "",
+                        message: err
+                    }, 'error');
+                    res.send({
+                        status: 0,
+                        message: "Somthing went wrong"
+                    });
+                    connection.disconnect();
+                } else {
 
-            if (result.length === 1) {
-                result[0].practice = result[0].practice.filter((value) => {
-                    return value.name === req.body.practicename;
-                });
-                var tokenpayload = {
-                    id: result[0]._id
-                };
+                    if (result.length === 1) {
 
-                var token = jwt.sign(tokenpayload, app.get('superSecret'), {
-                    expiresIn: 86400 // expires in 24 hours = 86400
-                });
+                        if (result[0].status === 1) 
+                        {
+                            res.send({success:false,message:'You are blocked from admin'})    
+                        } 
+                        else {
 
-                var lastlogintoken = jwt.sign({
-                    practicename: result[0].practice[0].name,
-                    username: result[0].username
-                }, app.get('superSecret'), {
-                    expiresIn: 86400 // expires in 24 hours = 86400
-                });
+                            var tokenpayload = {
+                                id: result[0].id
+                            };
 
-             
+                            var token = jwt.sign(tokenpayload, app.get('superSecret'), {
+                                expiresIn: 86400 // expires in 24 hours = 86400
+                            });
 
-                res.cookie('token', token, {
-                    httpOnly: true
-                });
+                            res.cookie('token', token, {
+                                httpOnly: true
+                            });
+                            res.cookie('name', result[0].name, {
+                                httpOnly: true
+                            });
+                            res.cookie('role', result[0].role, {
+                                httpOnly: true
+                            });
 
-                var responsePayload = {
-                    token: token,
-                    lastlogin: lastlogintoken,
-                    practicename: result[0].practice[0].name,
-                    athena_practiceid: result[0].practice[0].athena_practiceid,
-                    role: result[0].practice[0].role,
-                    rolename: result[0].practice[0].rolename,
-                    username: result[0].username,
+                            var responsePayload = {
+                                success:true,
+                                token: token,
+                                name: result[0].name,
+                                role: result[0].role,
+                                profilepic: result[0].profilepic,
+                            }
+
+                            res.json(responsePayload);
+                            connection.disconnect();
+                        }
+                    }
                 }
-
-                res.json(responsePayload);
-                connection.disconnect();
-            }
-        }
-    });
-
+            });
+        });
+    } else {
+        res.json({
+            status: 0,
+            message: "Invalid access token and key pair"
+        });
+    }
 };
-
