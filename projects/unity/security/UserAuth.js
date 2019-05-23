@@ -27,18 +27,17 @@ module.exports = function (req, res, next) {
     };
 
 	if(req.headers.cookie)
-	{
-			var cookies = req.headers.cookie.split(';', 5);
+	{   
+
+        req.headers.cookie.replace(/[^0-9]/g, '');
+            var cookies = req.headers.cookie.split(';', 20);
 			cookies.map(function (value) {
 				getvaluesinObject(value)
 			});
-	
     // check header or url parameters or post parameters for token
-    var token = verificationObject[0].token || req.param('token') || req.headers['x-access-token'];
-
+    var token = verificationObject[0].token;
     // decode token
     if (token) {
-
         // verifies secret and checks exp
         jwt.verify(token, app.get('superSecret'), function (err, decoded) {
             if (err) {
