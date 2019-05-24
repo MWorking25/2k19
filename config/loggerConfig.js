@@ -56,7 +56,7 @@ if (process.env.NODE_ENV !== 'production') {
 logger.stream = {
   write: function (message, encoding) {
     // use the 'info' log level so the output will be picked up by both transpssorts (file and console)
-    logger.info(message);
+    logger.info(message+'- - Time: '+new Date());
   },
 };
 

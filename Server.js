@@ -5,6 +5,7 @@ const express = require('express'),
     cors = require('cors')
     morgan = require('morgan'),
     logger = require('./config/logger'),
+    loggerConf = require('./config/loggerConfig'),
     connection = require('./projects/unity/config/connection'),
     unitmodel = require('./projects/unity/models/tables');
 
@@ -18,7 +19,22 @@ app.use(bodyParser.json({
     limit: '10mb'
 }));
 
-app.use(cors());
+
+var originsWhitelist = [
+    'http://localhost:4200',      //this is my front-end url for development
+  ];
+  var corsOptions = {
+    origin: function(origin, callback){
+          var isWhitelisted = originsWhitelist.indexOf(origin) !== -1;
+          callback(null, isWhitelisted);
+    },
+    credentials:true
+  }
+  //here is the magic
+  app.use(cors(corsOptions));
+
+
+// app.use(cors());
 
 app.use((err,req,res,next) =>{
     if (!err) return next(); // you also need this line
@@ -48,6 +64,10 @@ domainPing('103.252.7.90') // Insert the domain you want to ping
     //=> true
 })();
  */
+
+app.use(morgan('tiny', {
+    stream: loggerConf.stream
+}));
 
 app.use('/api', routes);
 

@@ -34,8 +34,22 @@ unityRouter.get('/getCitiesList',function(req,res){
 
 unityRouter.get('/getCitiesOnStates/:stateid',function(req,res){
     // security(req,res);userCtrl.authenticateUser(req,res);
-    masterCtrl.getCitiesOnStates(req,res);
+    authUser(req,res);masterCtrl.getCitiesOnStates(req,res);
 });
 
+unityRouter.get('/getAreaslist/',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);masterCtrl.getAreaslist(req,res);
+});
+
+unityRouter.post('/saveAreadetails/',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);masterCtrl.saveAreadetails(req,res);
+});
+
+unityRouter.post('/DeleteAreadetails/',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);masterCtrl.DeleteAreadetails(req,res);
+});
 
 module.exports = unityRouter;
