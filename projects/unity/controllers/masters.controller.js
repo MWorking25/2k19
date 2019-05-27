@@ -265,6 +265,94 @@ exports.getAreaslist = function (req, res) {
     }
 };
 
+exports.saveUserDetails = function (req, res) {
+    if (req.decoded.success == true) {
+
+        var userData = JSON.parse(req.body.userdetails);
+        if(req.files.length > 0)
+        {
+            userData.profilepic =  req.files[0].filename;
+        }
+        console.log(userData);
+
+       /*  connection.acquire(function (err, con) {
+            con.query("SELECT *,(SELECT states.country_id FROM states WHERE states.id = areas.stateid) as countryid,(SELECT states.name FROM states WHERE states.id = areas.stateid) as statename,(SELECT cities.name FROM cities WHERE cities.id = areas.cityid) as cityname,(SELECT countries.name FROM countries WHERE countries.id = (SELECT states.country_id FROM states WHERE states.id = areas.stateid)) as countryname FROM `areas`", function (err, result) {
+                if (err) {
+
+
+                    logger.writeLogs({
+                        path: "master.controller/getAreaslist",
+                        line: "",
+                        message: err
+                    }, 'error');
+
+
+                    res.send({
+                        status: 0,
+                        message: "Something went worng, Please try again letter"
+                    });
+                    con.release();
+                } else {
+                    res.json(result);
+                    con.release();
+                }
+            });
+        }); */
+    } else {
+
+        res.send({
+            success: false,
+            type: "error",
+            title: "Oops!",
+            message: 'Invalid token.',
+        });
+
+    }
+};
+
+
+exports.SaveUserDetailsWIthoutPic = function (req, res) {
+    if (req.decoded.success == true) {
+
+        var userData = req.body;
+        
+        console.log(userData);
+
+       /*  connection.acquire(function (err, con) {
+            con.query("SELECT *,(SELECT states.country_id FROM states WHERE states.id = areas.stateid) as countryid,(SELECT states.name FROM states WHERE states.id = areas.stateid) as statename,(SELECT cities.name FROM cities WHERE cities.id = areas.cityid) as cityname,(SELECT countries.name FROM countries WHERE countries.id = (SELECT states.country_id FROM states WHERE states.id = areas.stateid)) as countryname FROM `areas`", function (err, result) {
+                if (err) {
+
+
+                    logger.writeLogs({
+                        path: "master.controller/getAreaslist",
+                        line: "",
+                        message: err
+                    }, 'error');
+
+
+                    res.send({
+                        status: 0,
+                        message: "Something went worng, Please try again letter"
+                    });
+                    con.release();
+                } else {
+                    res.json(result);
+                    con.release();
+                }
+            });
+        }); */
+    } else {
+
+        res.send({
+            success: false,
+            type: "error",
+            title: "Oops!",
+            message: 'Invalid token.',
+        });
+
+    }
+};
+
 exports.saveAreadetails = function (req, res) {
     if (req.decoded.success == true) {
         connection.acquire(function (err, con) {

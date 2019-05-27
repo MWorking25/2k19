@@ -1,4 +1,22 @@
 const express = require('express');
+const multer = require('multer');
+var path = require('path');
+const dir = './public/unity/uploads';
+
+
+let storage = multer.diskStorage({
+	destination: (req, file, cb) => {
+		cb(null, dir);
+	},
+	filename: (req, file, cb) => {
+		cb(null, file.fieldname + '-' + Date.now() + '_' + path.extname(file.originalname));
+	}
+});
+
+let upload = multer({
+	storage: storage
+});
+
 const unityRouter = express.Router();
 const security = require('./security/security');
 const authUser = require('./security/UserAuth');
@@ -50,6 +68,16 @@ unityRouter.post('/saveAreadetails/',function(req,res){
 unityRouter.post('/DeleteAreadetails/',function(req,res){
     // security(req,res);userCtrl.authenticateUser(req,res);
     authUser(req,res);masterCtrl.DeleteAreadetails(req,res);
+});
+
+unityRouter.post('/saveUserDetails/',upload.any(),function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);masterCtrl.saveUserDetails(req,res);
+});
+
+unityRouter.post('/SaveUserDetailsWIthoutPic/',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);masterCtrl.SaveUserDetailsWIthoutPic(req,res);
 });
 
 module.exports = unityRouter;
