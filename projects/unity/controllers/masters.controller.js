@@ -5,7 +5,20 @@ const logger = require('../config/logger'),
     connection = require('../config/connection'),
     crypto = require('crypto'),
     app = express();
+    var sendMail = require('./mail.controller');
 
+    var encryptionKey = process.env.ENC_TOKEN;
+    encrypt = function (text) {
+
+        if (text === null || typeof text === 'undefined') {
+            return text;
+        };
+        var cipher = crypto.createCipher('aes-256-cbc', encryptionKey);
+        var crypted = cipher.update(text, 'utf8', 'hex');
+        crypted += cipher.final('hex');
+    
+        return crypted;
+    };
 
 
 exports.getCountryList = function (req, res) {
@@ -273,31 +286,119 @@ exports.saveUserDetails = function (req, res) {
         {
             userData.profilepic =  req.files[0].filename;
         }
-        console.log(userData);
+/*         console.log(userData);
+        console.log(req.decoded.id);
+        console.log(req.Loggedinuser.role); */
 
-       /*  connection.acquire(function (err, con) {
-            con.query("SELECT *,(SELECT states.country_id FROM states WHERE states.id = areas.stateid) as countryid,(SELECT states.name FROM states WHERE states.id = areas.stateid) as statename,(SELECT cities.name FROM cities WHERE cities.id = areas.cityid) as cityname,(SELECT countries.name FROM countries WHERE countries.id = (SELECT states.country_id FROM states WHERE states.id = areas.stateid)) as countryname FROM `areas`", function (err, result) {
+         connection.acquire(function (err, con) {
+            con.query("SELECT COUNT(*) as userexist FROM `users` WHERE `email` =?",[userData.email], function (err, result) {
                 if (err) {
 
 
                     logger.writeLogs({
-                        path: "master.controller/getAreaslist",
+                        path: "master.controller/saveuserdetails-email-verification",
                         line: "",
                         message: err
                     }, 'error');
 
 
                     res.send({
-                        status: 0,
+                        status: 1,
+                        type:"error",
+                        title:"Oops!",
                         message: "Something went worng, Please try again letter"
                     });
                     con.release();
                 } else {
-                    res.json(result);
-                    con.release();
+                  
+                    if(result[0].userexist != 0)
+                    {
+                        res.send({
+                            status: 1,
+                            type:"error",
+                            title:"Oops!",
+                            message: "Email id already exist"
+                        });
+                        con.release();
+                    }
+                    else
+                    {
+                        con.query("SELECT COUNT(*) as userexist FROM `users` WHERE `mobile` =?",[userData.mobile], function (err, result) {
+                            if (err) {
+            
+            
+                                logger.writeLogs({
+                                    path: "master.controller/saveuserdetails-mobile-verification",
+                                    line: "",
+                                    message: err
+                                }, 'error');
+            
+            
+                                res.send({
+                                    status: 1,
+                                    type:"error",
+                                    title:"Oops!",
+                                    message: "Something went worng, Please try again letter"
+                                });
+                                con.release();
+                            } else {
+                              
+                                if(result[0].userexist != 0)
+                                {
+                                    res.send({
+                                        status: 1,
+                                        type:"error",
+                                        title:"Oops!",
+                                        message: "Mobile Number already exist"
+                                    });
+                                    con.release();
+                                }
+                                else
+                                {
+
+                                    var passwordtxt = "";
+                                    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                                    for (var i = 0; i < 6; i++) {
+                                        passwordtxt += possible.charAt(Math.floor(Math.random() * possible.length));
+                                    }
+
+                                    var hashpassword = encrypt(passwordtxt);
+
+                                    con.query("INSERT INTO `users`(`name`, `email`, `mobile`, `role`, `profilepic`, `status`, `password`, `createdby`) VALUES (?,?,?,?,?,?,?,?)",[userData.fullname,userData.email,userData.mobile,userData.userRole,userData.profilepic,0,hashpassword,req.decoded.id], function (err, result) {
+                                        if (err) {
+                        
+                                            logger.writeLogs({
+                                                path: "master.controller/saveuserdetails-mobile-verification",
+                                                line: "",
+                                                message: err
+                                            }, 'error');
+                        
+                        
+                                            res.send({
+                                                status: 1,
+                                                type:"error",
+                                                title:"Oops!",
+                                                message: "Something went worng, Please try again letter"
+                                            });
+                                            con.release();
+                                        } else {
+                                            res.send({
+                                                status: 0,
+                                                type:"success",
+                                                title:"Done!",
+                                                message: "User`s details saved successfully."
+                                            });
+                                            con.release();
+                                        }
+                                    });
+                                    
+                                }
+                            }
+                        });
+                    }
                 }
             });
-        }); */
+        }); 
     } else {
 
         res.send({
@@ -318,29 +419,130 @@ exports.SaveUserDetailsWIthoutPic = function (req, res) {
         
         console.log(userData);
 
-       /*  connection.acquire(function (err, con) {
-            con.query("SELECT *,(SELECT states.country_id FROM states WHERE states.id = areas.stateid) as countryid,(SELECT states.name FROM states WHERE states.id = areas.stateid) as statename,(SELECT cities.name FROM cities WHERE cities.id = areas.cityid) as cityname,(SELECT countries.name FROM countries WHERE countries.id = (SELECT states.country_id FROM states WHERE states.id = areas.stateid)) as countryname FROM `areas`", function (err, result) {
+        connection.acquire(function (err, con) {
+            con.query("SELECT COUNT(*) as userexist FROM `users` WHERE `email` =?",[userData.email], function (err, result) {
                 if (err) {
 
 
                     logger.writeLogs({
-                        path: "master.controller/getAreaslist",
+                        path: "master.controller/saveuserdetails-email-verification",
                         line: "",
                         message: err
                     }, 'error');
 
 
                     res.send({
-                        status: 0,
+                        status: 1,
+                        type:"error",
+                        title:"Oops!",
                         message: "Something went worng, Please try again letter"
                     });
                     con.release();
                 } else {
-                    res.json(result);
-                    con.release();
+                  
+                    if(result[0].userexist != 0)
+                    {
+                        res.send({
+                            status: 1,
+                            type:"error",
+                            title:"Oops!",
+                            message: "Email id already exist"
+                        });
+                        con.release();
+                    }
+                    else
+                    {
+                        con.query("SELECT COUNT(*) as userexist FROM `users` WHERE `mobile` =?",[userData.mobile], function (err, result) {
+                            if (err) {
+            
+            
+                                logger.writeLogs({
+                                    path: "master.controller/saveuserdetails-mobile-verification",
+                                    line: "",
+                                    message: err
+                                }, 'error');
+            
+            
+                                res.send({
+                                    status: 1,
+                                                type:"error",
+                                                title:"Oops!",
+                                    message: "Something went worng, Please try again letter"
+                                });
+                                con.release();
+                            } else {
+                              
+                                if(result[0].userexist != 0)
+                                {
+                                    res.send({
+                                        status: 1,
+                                        type:"error",
+                                        title:"Oops!",
+                                        message: "Mobile Number already exist"
+                                    });
+                                    con.release();
+                                }
+                                else
+                                {
+
+                                    var passwordtxt = "";
+                                    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                                    for (var i = 0; i < 6; i++) {
+                                        passwordtxt += possible.charAt(Math.floor(Math.random() * possible.length));
+                                    }
+
+                                    var hashpassword = encrypt(passwordtxt);
+
+                                    con.query("INSERT INTO `users`(`name`, `email`, `mobile`, `role`, `status`, `password`, `createdby`) VALUES (?,?,?,?,?,?,?)",[userData.fullname,userData.email,userData.mobile,userData.userRole,0,hashpassword,req.decoded.id], function (err, result) {
+                                        if (err) {
+                        
+                                            logger.writeLogs({
+                                                path: "master.controller/saveuserdetails-mobile-verification",
+                                                line: "",
+                                                message: err
+                                            }, 'error');
+                        
+                        
+                                            res.send({
+                                                status: 1,
+                                                type:"error",
+                                                title:"Oops!",
+                                                message: "Something went worng, Please try again letter"
+                                            });
+                                            con.release();
+                                        } else {
+
+
+                                            var emailsent = sendMail.newUserRegistartion({name:userData.fullname,email:userData.email,passwordtxt:passwordtxt})
+                                                if(emailsent == "error")
+                                                {
+                                                    res.send({
+                                                        status: 0,
+                                                        type:"success",
+                                                        title:"Done!",
+                                                        message: "User`s details saved successfully.failed to send password"
+                                                    });
+                                                }
+                                                else{
+                                                    res.send({
+                                                        status: 0,
+                                                        type:"success",
+                                                        title:"Done!",
+                                                        message: "User`s details saved successfully.Password had sent to respected user`s email"
+                                                    });
+                                                  }
+                                            con.release();
+                                        }
+                                    });
+                                    
+                                }
+                            }
+                        });
+                    }
                 }
             });
-        }); */
+        });
+      
     } else {
 
         res.send({
