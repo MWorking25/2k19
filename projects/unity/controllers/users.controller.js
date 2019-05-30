@@ -26,6 +26,7 @@ exports.authenticateUser = function (req, res) {
     // if (req.tokenApprove === true) {
         var hashedString = encrypt(String(req.body.passwordCtrl));
         connection.acquire(function (err, con) {
+			console.log(hashedString);
             con.query('SELECT `id`,`name`,`role`,`profilepic`,`status` FROM `users` WHERE `email` =? AND `password` =?', [req.body.useremailCtrl, hashedString], function (err, result) {
                 if (err) {
                     logger.writeLogs({
