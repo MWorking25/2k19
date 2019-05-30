@@ -20,6 +20,8 @@ app.use(bodyParser.json({
 }));
 
 
+app.use(express.static('public'));
+
 var originsWhitelist = [
     'http://localhost:4200',      //this is my front-end url for development
   ];

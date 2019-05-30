@@ -81,4 +81,14 @@ unityRouter.post('/SaveUserDetailsWIthoutPic/',function(req,res){
     authUser(req,res);masterCtrl.SaveUserDetailsWIthoutPic(req,res);
 });
 
+unityRouter.get('/getUsersList/',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);masterCtrl.getUsersList(req,res);
+});
+
+unityRouter.post('/DeleteUsersDetails/',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);masterCtrl.DeleteUsersDetails(req,res);
+});
+
 module.exports = unityRouter;
