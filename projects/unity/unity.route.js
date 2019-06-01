@@ -56,6 +56,11 @@ unityRouter.get('/getCitiesOnStates/:stateid',function(req,res){
     authUser(req,res);masterCtrl.getCitiesOnStates(req,res);
 });
 
+unityRouter.get('/getAreasOnCity/:cityid',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);masterCtrl.getAreasOnCity(req,res);
+});
+
 unityRouter.get('/getAreaslist/',function(req,res){
     // security(req,res);userCtrl.authenticateUser(req,res);
     authUser(req,res);masterCtrl.getAreaslist(req,res);

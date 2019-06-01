@@ -198,6 +198,43 @@ exports.getCitiesOnStates = function (req, res) {
     }
 };
 
+
+exports.getAreasOnCity = function (req, res) {
+    if (req.decoded.success == true) {
+        connection.acquire(function (err, con) {
+            con.query("SELECT `id`,`name` FROM `areas` WHERE `cityid` = " + req.params.cityid + " ORDER BY name ASC", function (err, result) {
+                if (err) {
+
+                    logger.writeLogs({
+                        path: "master.controller/getAreasOnCity",
+                        line: "",
+                        message: err
+                    }, 'error');
+
+
+                    res.send({
+                        status: 0,
+                        message: "Something went worng, Please try again letter"
+                    });
+                    con.release();
+                } else {
+                    res.send(result);
+                    con.release();
+                }
+            });
+        });
+    } else {
+
+        res.send({
+            success: false,
+            type: "error",
+            title: "Oops!",
+            message: 'Invalid token.',
+        });
+
+    }
+};
+
 exports.DeleteAreadetails = function (req, res) {
     if (req.decoded.success == true) {
         connection.acquire(function (err, con) {
