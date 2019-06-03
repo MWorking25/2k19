@@ -23,6 +23,7 @@ const security = require('./security/security');
 const authUser = require('./security/UserAuth');
 const userCtrl = require('./controllers/users.controller');
 const masterCtrl = require('./controllers/masters.controller');
+const hotelCtrl = require('./controllers/hotel.controller');
 
 //bd83b23ue83b899e2383b2383n238 token   U889436 key
 
@@ -94,6 +95,11 @@ unityRouter.get('/getUsersList/',function(req,res){
 unityRouter.post('/DeleteUsersDetails/',function(req,res){
     // security(req,res);userCtrl.authenticateUser(req,res);
     authUser(req,res);masterCtrl.DeleteUsersDetails(req,res);
+});
+
+unityRouter.post('/SaveHotelDetails/',upload.any(),function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);hotelCtrl.SaveHotelDetails(req,res);
 });
 
 module.exports = unityRouter;
