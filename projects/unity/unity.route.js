@@ -102,4 +102,14 @@ unityRouter.post('/SaveHotelDetails/',upload.any(),function(req,res){
     authUser(req,res);hotelCtrl.SaveHotelDetails(req,res);
 });
 
+unityRouter.post('/SaveHotelRoomDetails/',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);hotelCtrl.SaveHotelRoomDetails(req,res);
+});
+
+unityRouter.get('/HotelsList/',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);hotelCtrl.HotelsList(req,res);
+});
+
 module.exports = unityRouter;

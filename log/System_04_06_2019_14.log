@@ -1,0 +1,13 @@
+{"message":"Tue Jun 04 2019 14:45:23 GMT+0530 (India Standard Time)[master.controller/getCountryList-Line: ]-{\"code\":\"ER_PARSE_ERROR\",\"errno\":1064,\"sqlMessage\":\"You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '' at line 1\",\"sqlState\":\"42000\",\"index\":0,\"sql\":\"INSERT INTO `hotel_rooms`(`hotelid`, `room_type`,`capacity`, `description`, `price`, `discounted_price`, `rooms_count`,  `createdby`) VALUES (8,\\\"Non-Ac Room\\\",4,\\\"<div>non Ac Room with 4 persons</div>\\\",600,500,50,1),(8,\\\"AC Room\\\",4,\\\"<div><font color=\\\"#2568ba\\\">aC</font> rOOM fOR 4 PERSONS</div>\\\",900,875,60,1)\"}","level":"error"}
+{"message":"POST /api/unity/SaveHotelRoomDetails/ 200 101 - 36.277 ms\n- - Time: Tue Jun 04 2019 14:45:23 GMT+0530 (India Standard Time)","level":"info"}
+{"message":"POST /api/unity/SaveHotelRoomDetails/ 200 111 - 62.879 ms\n- - Time: Tue Jun 04 2019 14:47:18 GMT+0530 (India Standard Time)","level":"info"}
+{"message":"POST /api/unity/SaveHotelRoomDetails/ 200 111 - 38.279 ms\n- - Time: Tue Jun 04 2019 14:48:25 GMT+0530 (India Standard Time)","level":"info"}
+{"message":"POST /api/unity/SaveHotelRoomDetails/ 200 110 - 61.608 ms\n- - Time: Tue Jun 04 2019 14:49:00 GMT+0530 (India Standard Time)","level":"info"}
+{"message":"POST /api/unity/SaveHotelRoomDetails/ 200 110 - 82.420 ms\n- - Time: Tue Jun 04 2019 14:50:11 GMT+0530 (India Standard Time)","level":"info"}
+{"message":"GET /api/unity/getCountryList 304 - - 113.479 ms\n- - Time: Tue Jun 04 2019 14:52:45 GMT+0530 (India Standard Time)","level":"info"}
+{"message":"GET /api/unity/getCountryList 304 - - 5.781 ms\n- - Time: Tue Jun 04 2019 14:57:02 GMT+0530 (India Standard Time)","level":"info"}
+{"message":"GET /api/unity/getCountryList 304 - - 5.986 ms\n- - Time: Tue Jun 04 2019 15:00:47 GMT+0530 (India Standard Time)","level":"info"}
+{"message":"GET /api/unity/getCountryList 304 - - 6.154 ms\n- - Time: Tue Jun 04 2019 15:02:06 GMT+0530 (India Standard Time)","level":"info"}
+{"message":"GET /api/unity/getCountryList 304 - - 6.757 ms\n- - Time: Tue Jun 04 2019 15:02:43 GMT+0530 (India Standard Time)","level":"info"}
+{"message":"GET /api/unity/getCountryList 304 - - 4.883 ms\n- - Time: Tue Jun 04 2019 15:02:52 GMT+0530 (India Standard Time)","level":"info"}
+{"message":"GET /api/unity/getCountryList 304 - - 3.462 ms\n- - Time: Tue Jun 04 2019 15:03:12 GMT+0530 (India Standard Time)","level":"info"}

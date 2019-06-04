@@ -18,7 +18,7 @@
         "Query":"CREATE TABLE IF NOT EXISTS `hotel_likes` ( `id` INT NOT NULL AUTO_INCREMENT , `hotelid` INT NULL , `likedby` INT NULL , `like` INT NULL , `createddate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB;"
     }
     ,{
-        "Query":"CREATE TABLE IF NOT EXISTS `hotel_rooms` ( `id` INT NOT NULL AUTO_INCREMENT , `hotelid` INT NULL , `room_type` VARCHAR(1500) NULL , `rooms_count` INT NULL , `description` VARCHAR(5000) NULL DEFAULT NULL , `price` DOUBLE NULL , `discounted_price` DOUBLE NULL , `cgst` DOUBLE NULL , `sgst` DOUBLE NULL , `igst` DOUBLE NULL , `createdby` INT NULL , `createddate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB;"
+        "Query":"CREATE TABLE IF NOT EXISTS `hotel_rooms` ( `id` INT NOT NULL AUTO_INCREMENT , `hotelid` INT NULL , `room_type` VARCHAR(1500) NULL , `rooms_count` INT NULL , `description` VARCHAR(5000) NULL DEFAULT NULL , `price` DOUBLE NULL , `discounted_price` DOUBLE NULL , `cgst` DOUBLE NULL , `sgst` DOUBLE NULL , `igst` DOUBLE NULL , `createdby` INT NULL , `createddate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB;ALTER TABLE `hotel_rooms` ADD IF NOT EXISTS `capacity`  BIGINT NULL DEFAULT NULL AFTER `description`;"
     }
     ,{
         "Query":"CREATE TABLE IF NOT EXISTS `hotel_review_items` ( `id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(1000) NULL , `hotelid` INT NULL , `createdby` INT NULL , `createddate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB;"
