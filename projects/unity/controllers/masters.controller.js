@@ -942,6 +942,48 @@ exports.getUsersList = function (req, res) {
     }
 };
 
+exports.getAmintiesListList = function (req, res) {
+    if (req.decoded.success == true) {
+        connection.acquire(function (err, con) {
+            if (req.Loggedinuser.role === 'Superadmin') {
+                var sql = "SELECT *,DATE_FORMAT(createddate,'%d/%m/%Y') AS creationdate,(SELECT COUNT(*) from hotel_subaminities WHERE hotel_subaminities.aminityid = hotel_aminities.id) as totalaminities FROM `hotel_aminities` ORDER BY id ASC";
+            } else {
+                var sql = "SELECT *,DATE_FORMAT(createddate,'%d/%m/%Y') AS creationdate,(SELECT COUNT(*) from hotel_subaminities WHERE hotel_subaminities.aminityid = hotel_aminities.id) as totalaminities FROM `hotel_aminities` WHERE `createdby` = " + req.decoded.id + "ORDER BY id ASC";
+            }
+            con.query(sql, function (err, result) {
+                if (err) {
+                    logger.writeLogs({
+                        path: "master.controller/getAmintiesListList",
+                        line: "",
+                        message: err
+                    }, 'error');
+
+
+                    res.send({
+                        status: 0,
+                        type: "error",
+                        title: "Oops!",
+                        message: "Something went worng, Please try again letter"
+                    });
+                    con.release();
+                } else {
+                    res.json(result);
+                    con.release();
+                }
+            });
+        });
+    } else {
+
+        res.send({
+            success: false,
+            type: "error",
+            title: "Oops!",
+            message: 'Invalid token.',
+        });
+
+    }
+};
+
 
 exports.DeleteUsersDetails = function (req, res) {
     if (req.decoded.success == true) {
