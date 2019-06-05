@@ -24,3 +24,5 @@
 {"message":"GET /api/unity/HotelsList/ 304 - - 1.881 ms\n- - Time: Tue Jun 04 2019 20:22:37 GMT+0530 (India Standard Time)","level":"info"}
 {"message":"GET /api/unity/HotelsList/ 304 - - 3.267 ms\n- - Time: Tue Jun 04 2019 20:24:26 GMT+0530 (India Standard Time)","level":"info"}
 {"message":"GET /api/unity/getCountryList 304 - - 6.471 ms\n- - Time: Tue Jun 04 2019 20:24:28 GMT+0530 (India Standard Time)","level":"info"}
+{"message":"GET /api/unity/getExistingLocations/ 404 170 - 0.448 ms\n- - Time: Tue Jun 04 2019 23:59:48 GMT+0530 (India Standard Time)","level":"info"}
+{"message":"GET /api/unity/getExistingLocations/ 404 170 - 50.526 ms\n- - Time: Wed Jun 05 2019 00:00:03 GMT+0530 (India Standard Time)","level":"info"}

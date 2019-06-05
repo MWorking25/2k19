@@ -352,3 +352,31 @@ exports.HotelsList = function (req, res) {
 
     } 
 };
+
+
+
+exports.getRelaventSearch = function (req, res) {
+        connection.acquire(function (err, con) {
+                con.query("SELECT areas.`name` AS serachresult,(CASE WHEN areas.cityid > 0 THEN (SELECT CONCAT(cities.name,', ',(SELECT states.name FROM states WHERE states.id = cities.state_id),', ',(SELECT countries.name FROM countries WHERE countries.id = (SELECT states.country_id FROM states WHERE states.id = cities.state_id LIMIT 1))) FROM cities WHERE cities.id = areas.cityid) ELSE '' END) as address FROM `areas` WHERE areas.name LIKE'%"+req.params.filteredkeyword+"%' UNION SELECT hotel_master.name as serachresult ,CONCAT((CASE WHEN hotel_master.area > 0 THEN (SELECT areas.name FROM areas WHERE areas.id = hotel_master.area) ELSE '' END),', ',(CASE WHEN hotel_master.city > 0 THEN (SELECT cities.name FROM cities WHERE cities.id = hotel_master.city) ELSE '' END),', ',(CASE WHEN hotel_master.state > 0 THEN (SELECT states.name FROM states WHERE states.id = hotel_master.state) ELSE '' END),', ',(CASE WHEN hotel_master.country > 0 THEN (SELECT countries.name FROM countries WHERE countries.id = hotel_master.country) ELSE '' END)) AS address FROM hotel_master WHERE hotel_master.name LIKE'%"+req.params.filteredkeyword+"%' UNION SELECT cities.name AS serachresult , CONCAT((SELECT states.name FROM states WHERE states.id = cities.state_id),', ',(SELECT countries.name FROM countries WHERE countries.id = (SELECT states.country_id FROM states WHERE states.id = cities.state_id))) as address FROM cities  WHERE cities.name LIKE'%"+req.params.filteredkeyword+"%' UNION SELECT states.name AS serachresult , (SELECT countries.name FROM countries WHERE countries.id = states.country_id) as address FROM states WHERE states.name LIKE'%"+req.params.filteredkeyword+"%'", function (err, result) {
+                    if (err) {
+    
+                        logger.writeLogs({
+                            path: "master.controller/getCountryList",
+                            line: "",
+                            message: err
+                        }, 'error');
+    
+                        res.send({
+                            status: 1,
+                            type: "error",
+                            title: "Oops!",
+                            message: "Something went worng, Please try again letter"
+                        });
+                        con.release();
+                    } else {
+                        res.send(result);
+                        con.release();
+                    }
+                });       
+        });
+};
