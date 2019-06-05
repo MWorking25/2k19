@@ -24,6 +24,7 @@ app.use(express.static('public'));
 
  var originsWhitelist = [
     'http://localhost:4200',      //this is my front-end url for development
+    'http://localhost:8100',      //this is my front-end url for development
     'http://103.252.7.5:8830',
   ];
   var corsOptions = {

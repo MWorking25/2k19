@@ -133,11 +133,5 @@ unityRouter.get('/deleteRoomDetails/:roomid',function(req,res){
 });
 
 
-/* MOBILE APP APIS */
-
-unityRouter.get('/getRelaventSearch/:filteredkeyword',function(req,res){
-    // security(req,res);userCtrl.authenticateUser(req,res);
-    hotelCtrl.getRelaventSearch(req,res);
-});
 
 module.exports = unityRouter;
