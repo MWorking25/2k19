@@ -92,6 +92,11 @@ unityRouter.get('/getUsersList/',function(req,res){
     authUser(req,res);masterCtrl.getUsersList(req,res);
 });
 
+unityRouter.get('/getAmintiesListList/',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);masterCtrl.getAmintiesListList(req,res);
+});
+
 unityRouter.post('/DeleteUsersDetails/',function(req,res){
     // security(req,res);userCtrl.authenticateUser(req,res);
     authUser(req,res);masterCtrl.DeleteUsersDetails(req,res);
@@ -112,6 +117,20 @@ unityRouter.get('/HotelsList/',function(req,res){
     authUser(req,res);hotelCtrl.HotelsList(req,res);
 });
 
+unityRouter.get('/getHotelDetails/:hotelid',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);hotelCtrl.getHotelDetails(req,res);
+});
+
+unityRouter.post('/DeleteHotelDetails/',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);hotelCtrl.DeleteHotelDetails(req,res);
+});
+
+unityRouter.get('/deleteRoomDetails/:roomid',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);hotelCtrl.deleteRoomDetails(req,res);
+});
 
 
 /* MOBILE APP APIS */
@@ -120,7 +139,5 @@ unityRouter.get('/getRelaventSearch/:filteredkeyword',function(req,res){
     // security(req,res);userCtrl.authenticateUser(req,res);
     hotelCtrl.getRelaventSearch(req,res);
 });
-
-
 
 module.exports = unityRouter;

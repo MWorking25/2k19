@@ -258,11 +258,18 @@ exports.SaveHotelRoomDetails = function (req, res) {
                 }
                 for(var i =0 ; i < req.body.length;i++)
                 {
-                     ss += "("+req.body[i].hotelid+",'"+req.body[i].room_type+"',"+(req.body[i].capacity || 0)+",'"+(req.body[i].description||null)+"',"+(req.body[i].price || 0)+","+(req.body[i].discounted_price||0)+","+(req.body[i].rooms_count || 0)+","+req.body[i].createdby +"),";
+                    if(req.body[i].id == 0)
+                    {
+                        ss += "INSERT INTO `hotel_rooms`(`hotelid`, `room_type`,`capacity`, `description`, `price`, `discounted_price`, `rooms_count`,  `createdby`) VALUES ("+req.body[i].hotelid+",'"+req.body[i].room_type+"',"+(req.body[i].capacity || 0)+",'"+(req.body[i].description||null)+"',"+(req.body[i].price || 0)+","+(req.body[i].discounted_price||0)+","+(req.body[i].rooms_count || 0)+","+req.body[i].createdby +");";
+                    }
+                    else
+                    {
+                        ss += "UPDATE `hotel_rooms` SET `room_type`= '"+req.body[i].room_type+"' ,`rooms_count`= "+(req.body[i].rooms_count || 0)+" ,`description`= '"+(req.body[i].description||null)+"' ,`capacity`= "+(req.body[i].capacity || 0)+" ,`price`= "+(req.body[i].price||0)+" ,`discounted_price`= "+(req.body[i].discounted_price||0)+" WHERE `id` = "+req.body[i].id+";";
+                    }
                 }
-                 ss = ss.substring(0,ss.length -1);
+                //  ss = ss.substring(0,ss.length -1);
 
-                con.query("INSERT INTO `hotel_rooms`(`hotelid`, `room_type`,`capacity`, `description`, `price`, `discounted_price`, `rooms_count`,  `createdby`) VALUES "+ss, function (err, result) {
+                con.query(ss, function (err, result) {
                     if (err) {
     
                         logger.writeLogs({
@@ -284,7 +291,7 @@ exports.SaveHotelRoomDetails = function (req, res) {
                             type: "success",
                             title: "Done!",
                             message: "Hotel`s rooms details saved successfully",
-                            hotelid:result.insertId
+                            hotelid:req.body[0].hotelid
                         });
                         con.release();
                     }
@@ -312,18 +319,18 @@ exports.HotelsList = function (req, res) {
              
             if(req.Loggedinuser.role === 'Superadmin')
             {
-                var sql = "SELECT `id`,`name`,`addressline1`,`addressline2`,`email`,`mobile1`,DATE_FORMAT(`created_date`,'%d-%m-%Y') as createddate,(CASE WHEN status =0 THEN 'Active' ELSE 'Blocked' END) as activestatus,(CASE WHEN area >0 THEN (SELECT areas.name FROM areas WHERE areas.id = hotel_master.area) ELSE '' END) as areaname,(CASE WHEN `city` >0 THEN (SELECT cities.name FROM cities WHERE cities.id = hotel_master.`city`) ELSE '' END) as cityname,(CASE WHEN `state` >0 THEN (SELECT states.name FROM states WHERE states.id = hotel_master.`state`) ELSE '' END) as statename,(CASE WHEN `country` >0 THEN (SELECT countries.name FROM countries WHERE countries.id = hotel_master.`country`) ELSE '' END) as countryname FROM `hotel_master`";
+                var sql = "SELECT `id`,`name`,`addressline1`,`addressline2`,`email`,`mobile1`,DATE_FORMAT(`created_date`,'%d-%m-%Y') as createddate,(CASE WHEN status =0 THEN 'Active' ELSE 'Blocked' END) as activestatus,(CASE WHEN area >0 THEN (SELECT areas.name FROM areas WHERE areas.id = hotel_master.area) ELSE '' END) as areaname,(CASE WHEN `city` >0 THEN (SELECT cities.name FROM cities WHERE cities.id = hotel_master.`city`) ELSE '' END) as cityname,(CASE WHEN `state` >0 THEN (SELECT states.name FROM states WHERE states.id = hotel_master.`state`) ELSE '' END) as statename,(CASE WHEN `country` >0 THEN (SELECT countries.name FROM countries WHERE countries.id = hotel_master.`country`) ELSE '' END) as countryname FROM `hotel_master` WHERE status != 2";
             }
             else
             {
-                    var sql  ="SELECT `id`,`name`,`addressline1`,`addressline2`,`email`,`mobile1`,DATE_FORMAT(`created_date`,'%d-%m-%Y') as createddate,(CASE WHEN status =0 THEN 'Active' ELSE 'Blocked' END) as activestatus,(CASE WHEN area >0 THEN (SELECT areas.name FROM areas WHERE areas.id = hotel_master.area) ELSE '' END) as areaname,(CASE WHEN `city` >0 THEN (SELECT cities.name FROM cities WHERE cities.id = hotel_master.`city`) ELSE '' END) as cityname,(CASE WHEN `state` >0 THEN (SELECT states.name FROM states WHERE states.id = hotel_master.`state`) ELSE '' END) as statename,(CASE WHEN `country` >0 THEN (SELECT countries.name FROM countries WHERE countries.id = hotel_master.`country`) ELSE '' END) as countryname FROM `hotel_master` WHERE created_by = "+req.decoded.id;
+                    var sql  ="SELECT `id`,`name`,`addressline1`,`addressline2`,`email`,`mobile1`,DATE_FORMAT(`created_date`,'%d-%m-%Y') as createddate,(CASE WHEN status =0 THEN 'Active' ELSE 'Blocked' END) as activestatus,(CASE WHEN area >0 THEN (SELECT areas.name FROM areas WHERE areas.id = hotel_master.area) ELSE '' END) as areaname,(CASE WHEN `city` >0 THEN (SELECT cities.name FROM cities WHERE cities.id = hotel_master.`city`) ELSE '' END) as cityname,(CASE WHEN `state` >0 THEN (SELECT states.name FROM states WHERE states.id = hotel_master.`state`) ELSE '' END) as statename,(CASE WHEN `country` >0 THEN (SELECT countries.name FROM countries WHERE countries.id = hotel_master.`country`) ELSE '' END) as countryname FROM `hotel_master` WHERE  WHERE status != 2 AND created_by = "+req.decoded.id;
             }
 
                 con.query(sql, function (err, result) {
                     if (err) {
     
                         logger.writeLogs({
-                            path: "master.controller/getCountryList",
+                            path: "hotel.controller/HotelsList",
                             line: "",
                             message: err
                         }, 'error');
@@ -354,3 +361,189 @@ exports.HotelsList = function (req, res) {
 };
 
 
+
+exports.getRelaventSearch = function (req, res) {
+    connection.acquire(function (err, con) {
+            con.query("SELECT areas.`name` AS serachresult,(CASE WHEN areas.cityid > 0 THEN (SELECT CONCAT(cities.name,', ',(SELECT states.name FROM states WHERE states.id = cities.state_id),', ',(SELECT countries.name FROM countries WHERE countries.id = (SELECT states.country_id FROM states WHERE states.id = cities.state_id LIMIT 1))) FROM cities WHERE cities.id = areas.cityid) ELSE '' END) as address FROM `areas` WHERE areas.name LIKE'%"+req.params.filteredkeyword+"%' UNION SELECT hotel_master.name as serachresult ,CONCAT((CASE WHEN hotel_master.area > 0 THEN (SELECT areas.name FROM areas WHERE areas.id = hotel_master.area) ELSE '' END),', ',(CASE WHEN hotel_master.city > 0 THEN (SELECT cities.name FROM cities WHERE cities.id = hotel_master.city) ELSE '' END),', ',(CASE WHEN hotel_master.state > 0 THEN (SELECT states.name FROM states WHERE states.id = hotel_master.state) ELSE '' END),', ',(CASE WHEN hotel_master.country > 0 THEN (SELECT countries.name FROM countries WHERE countries.id = hotel_master.country) ELSE '' END)) AS address FROM hotel_master WHERE hotel_master.name LIKE'%"+req.params.filteredkeyword+"%' UNION SELECT cities.name AS serachresult , CONCAT((SELECT states.name FROM states WHERE states.id = cities.state_id),', ',(SELECT countries.name FROM countries WHERE countries.id = (SELECT states.country_id FROM states WHERE states.id = cities.state_id))) as address FROM cities  WHERE cities.name LIKE'%"+req.params.filteredkeyword+"%' UNION SELECT states.name AS serachresult , (SELECT countries.name FROM countries WHERE countries.id = states.country_id) as address FROM states WHERE states.name LIKE'%"+req.params.filteredkeyword+"%'", function (err, result) {
+                if (err) {
+
+                    logger.writeLogs({
+                        path: "master.controller/getCountryList",
+                        line: "",
+                        message: err
+                    }, 'error');
+
+                    res.send({
+                        status: 1,
+                        type: "error",
+                        title: "Oops!",
+                        message: "Something went worng, Please try again letter"
+                    });
+                    con.release();
+                } else {
+                    res.send(result);
+                    con.release();
+                }
+            });       
+    });
+};
+
+exports.getHotelDetails = function (req, res) {
+
+     if (req.decoded.success == true) {
+        connection.acquire(function (err, con) {
+                con.query('SELECT * FROM `hotel_master` WHERE id = '+req.params.hotelid, function (err, hoteldetails) {
+                    if (err) {
+    
+                        logger.writeLogs({
+                            path: "hotel.controller/getHotelDetails",
+                            line: "",
+                            message: err
+                        }, 'error');
+    
+                        res.send({
+                            status: 1,
+                            type: "error",
+                            title: "Oops!",
+                            message: "Something went worng, Please try again letter"
+                        });
+                        con.release();
+                    } else {
+                     
+
+                        con.query('SELECT * FROM `hotel_rooms` WHERE `hotelid` =  '+req.params.hotelid, function (err, roomsdetails) {
+                            if (err) {
+            
+                                logger.writeLogs({
+                                    path: "hotel.controller/getHotelDetails-roomsdetails",
+                                    line: "",
+                                    message: err
+                                }, 'error');
+            
+                                res.send({
+                                    status: 1,
+                                    type: "error",
+                                    title: "Oops!",
+                                    message: "Something went worng, Please try again letter"
+                                });
+                                con.release();
+                            } else {
+                                    res.send({hoteldetails:hoteldetails,roomsdetails:roomsdetails});
+                                    con.release();
+                            }
+                        });      
+                        
+
+
+
+                    }
+                });       
+        });
+    } else {
+
+        res.send({
+            success: false,
+            type: "error",
+            title: "Oops!",
+            message: 'Invalid token.',
+        });
+
+    } 
+};
+
+
+exports.DeleteHotelDetails = function (req, res) {
+
+     if (req.decoded.success == true) {
+        connection.acquire(function (err, con) {
+
+
+            var ids = '(';
+            for (var i = 0; i < req.body.length; i++) {
+                ids += req.body[i] + ',';
+            }
+            ids = ids.substring(0, ids.length - 1) + ')';
+
+                con.query('UPDATE `hotel_master` SET `status` = 2 WHERE `id` IN '+ids, function (err, result) {
+                    if (err) {
+    
+                        logger.writeLogs({
+                            path: "hotel.controller/getHotelDetails",
+                            line: "",
+                            message: err
+                        }, 'error');
+    
+                        res.send({
+                            status: 1,
+                            type: "error",
+                            title: "Oops!",
+                            message: "Something went worng, Please try again letter"
+                        });
+                        con.release();
+                    } else {
+                           
+                        res.send({
+                            status: 0,
+                            type: "success",
+                            title: "Done!",
+                            message: "Record deleted successfully"
+                        });
+                        con.release(); 
+                    }
+                });       
+        });
+    } else {
+
+        res.send({
+            success: false,
+            type: "error",
+            title: "Oops!",
+            message: 'Invalid token.',
+        });
+
+    } 
+};
+
+exports.deleteRoomDetails = function (req, res) {
+
+     if (req.decoded.success == true) {
+        connection.acquire(function (err, con) {
+                con.query('DELETE FROM `hotel_rooms` WHERE `id` = '+req.params.roomid, function (err, result) {
+                    if (err) {
+    
+                        logger.writeLogs({
+                            path: "hotel.controller/deleteRoomDetails",
+                            line: "",
+                            message: err
+                        }, 'error');
+    
+                        res.send({
+                            status: 1,
+                            type: "error",
+                            title: "Oops!",
+                            message: "Something went worng, Please try again letter"
+                        });
+                        con.release();
+                    } else {
+                           
+                        res.send({
+                            status: 0,
+                            type: "success",
+                            title: "Done!",
+                            message: "Item deleted successfully"
+                        });
+                        con.release(); 
+                    }
+                });       
+        });
+    } else {
+
+        res.send({
+            success: false,
+            type: "error",
+            title: "Oops!",
+            message: 'Invalid token.',
+        });
+
+    } 
+};
