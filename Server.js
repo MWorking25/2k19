@@ -22,10 +22,9 @@ app.use(bodyParser.json({
 
 app.use(express.static('public'));
 
-/* var originsWhitelist = [
+ var originsWhitelist = [
     'http://localhost:4200',      //this is my front-end url for development
     'http://103.252.7.5:8830',
-    '*'
   ];
   var corsOptions = {
     origin: function(origin, callback){
@@ -35,16 +34,15 @@ app.use(express.static('public'));
     credentials:true
   }
   //here is the magic
-  app.use(cors(corsOptions)); */
+  app.use(cors(corsOptions)); 
 
 
-  app.use(function(req, res, next) {
+/*   app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
-  });
+  }); */
 
-// app.use(cors());
 
 app.use((err,req,res,next) =>{
     if (!err) return next(); // you also need this line
