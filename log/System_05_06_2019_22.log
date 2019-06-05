@@ -1,0 +1,3 @@
+{"message":"OPTIONS /api/unity/userAuth/bd83b23ue83b899e2383b2383n238/U889436 200 4 - 4.385 ms\n- - Time: Wed Jun 05 2019 23:30:12 GMT+0530 (India Standard Time)","level":"info"}
+{"message":"POST /api/unity/userAuth/bd83b23ue83b899e2383b2383n238/U889436 200 224 - 8.153 ms\n- - Time: Wed Jun 05 2019 23:30:12 GMT+0530 (India Standard Time)","level":"info"}
+{"message":"GET /api/unity/HotelsList/ 200 275 - 69.626 ms\n- - Time: Wed Jun 05 2019 23:30:20 GMT+0530 (India Standard Time)","level":"info"}
