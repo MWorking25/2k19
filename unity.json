@@ -33,7 +33,7 @@
         "Query":"CREATE TABLE IF NOT EXISTS `hotel_subaminities` ( `id` INT NOT NULL AUTO_INCREMENT , `hotelid` INT NULL , `aminityid` INT NULL , `name` VARCHAR(500) NULL , `createdby` INT NULL , `createddate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB;"
     }
     ,{
-        "Query":"CREATE TABLE IF NOT EXISTS `hotel_booking` ( `id` INT NOT NULL AUTO_INCREMENT , `hotelid` INT NOT NULL , `hotelroomid` INT NOT NULL , `adults` INT NOT NULL , `childrens` INT NOT NULL , `rooms` INT NOT NULL , `checkin_date` INT NOT NULL , `checkout_date` INT NOT NULL , `offers` INT NOT NULL , `amount` INT NOT NULL , `grossamount` INT NOT NULL , `cgst` INT NOT NULL , `sgst` INT NOT NULL , `igst` INT NOT NULL , `netamount` INT NOT NULL , `memberid` INT NOT NULL , `createddate` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;"
+        "Query":"CREATE TABLE IF NOT EXISTS `hotel_booking` ( `id` INT NOT NULL AUTO_INCREMENT , `hotelid` INT NOT NULL , `hotelroomid` INT NOT NULL , `adults` INT NOT NULL , `childrens` INT NOT NULL , `rooms` INT NOT NULL , `checkin_date` INT NOT NULL , `checkout_date` INT NOT NULL , `offers` INT NOT NULL , `amount` INT NOT NULL , `grossamount` INT NOT NULL , `cgst` INT NOT NULL , `sgst` INT NOT NULL , `igst` INT NOT NULL , `netamount` INT NOT NULL , `memberid` INT NOT NULL , `createddate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB;"
     }
     ,{
         "Query":"CREATE TABLE IF NOT EXISTS `members` ( `id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(150) NULL , `email` VARCHAR(1000) NULL , `mobile` BIGINT NULL , `password` VARCHAR(20) NULL , `fbdetails` VARCHAR(10000) NULL , `googledetails` VARCHAR(10000) NULL , `profilepic` VARCHAR(500) NULL , `createddate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB;"
@@ -52,5 +52,17 @@
     }
     ,{
         "Query":"CREATE TABLE IF NOT EXISTS `countries` (`id` int(11) NOT NULL AUTO_INCREMENT,`sortname` varchar(3) NOT NULL,`name` varchar(150) NOT NULL,`phonecode` int(11) NOT NULL,PRIMARY KEY (`id`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=249 ;"
+    }
+    ,{
+        "Query":"CREATE TABLE IF NOT EXISTS `vehical` ( `id` INT NOT NULL AUTO_INCREMENT , `company` VARCHAR(500) NULL DEFAULT NULL, `model` VARCHAR(100) NULL DEFAULT NULL, `passingno` VARCHAR(500) NULL DEFAULT NULL, `cpacity` INT NULL DEFAULT NULL, `color` VARCHAR(100) NULL DEFAULT NULL, `time_period` VARCHAR(100) NULL DEFAULT NULL, `price` DOUBLE NULL DEFAULT NULL, `discounted_price` DOUBLE NULL DEFAULT NULL, `description` VARCHAR(5000) NULL DEFAULT NULL, `coverpic` VARCHAR(500) NULL DEFAULT NULL, `cgst` DOUBLE NULL DEFAULT NULL, `sgst` DOUBLE NULL DEFAULT NULL, `igst` DOUBLE NULL DEFAULT NULL, `createdby` INT NULL DEFAULT NULL, `createddate` DATETIME NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB;"
+    }
+    ,{
+        "Query":"CREATE TABLE IF NOT EXISTS `vehical_pics` ( `id` INT NOT NULL AUTO_INCREMENT , `vehicalid` INT NULL DEFAULT NULL,`coverpic` VARCHAR(500) NULL DEFAULT NULL, `createdby` INT NULL DEFAULT NULL, `createddate` DATETIME NULL DEFAULT CURRENT_TIMESTAMP  , PRIMARY KEY (`id`)) ENGINE = InnoDB;"
+    }
+    ,{
+        "Query":"CREATE TABLE IF NOT EXISTS `vehical_docs` ( `id` INT NOT NULL AUTO_INCREMENT , `vehicalid` INT NULL DEFAULT NULL,`docname` VARCHAR(500) NULL DEFAULT NULL,`docimg` VARCHAR(500) NULL DEFAULT NULL, `createdby` INT NULL DEFAULT NULL, `createddate` DATETIME NULL DEFAULT CURRENT_TIMESTAMP  , PRIMARY KEY (`id`)) ENGINE = InnoDB;"
+    }
+    ,{
+        "Query":"CREATE TABLE IF NOT EXISTS `vehical_booking` ( `id` INT NOT NULL AUTO_INCREMENT , `vehicalid` INT NULL DEFAULT NULL, `memberid` INT NULL DEFAULT NULL,`idproof` VARCHAR(500) NULL DEFAULT NULL, `bookingdate` DATETIME NULL DEFAULT NULL,`bookingtime` DATETIME NULL DEFAULT NULL, `bookstatus` INT NULL DEFAULT NULL,  `returndate` DATETIME NULL DEFAULT NULL,`returntime` DATETIME NULL DEFAULT NULL, `returnstatus` INT NULL DEFAULT NULL, `createdby` INT NULL DEFAULT NULL, `createddate` DATETIME NULL DEFAULT CURRENT_TIMESTAMP, `updatedby` INT NULL DEFAULT NULL, `updateddate` DATETIME NULL DEFAULT CURRENT_TIMESTAMP  , PRIMARY KEY (`id`)) ENGINE = InnoDB;"
     }
 ]
