@@ -37,8 +37,6 @@ app.use(express.static('public'));
   //here is the magic
   app.use(cors(corsOptions)); 
 
-  app.options('*', cors())
-
 
 /*   app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");

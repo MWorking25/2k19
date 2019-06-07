@@ -35,10 +35,6 @@ unityMobileRouter.get('/getRelaventSearch/:filteredkeyword',cors(),function(req,
     hotelCtrl.getRelaventSearch(req,res);
 });
 
-unityMobileRouter.post('/test/',function(req,res){
-    // security(req,res);userCtrl.authenticateUser(req,res);
-    hotelCtrl.test(req,res);
-});
 
 
 
