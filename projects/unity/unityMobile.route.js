@@ -1,6 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 var path = require('path');
+var cors = require('cors');
 var dump = require('./config/DBBackup');
 const dir = './public/unity/uploads';
 
@@ -29,8 +30,8 @@ const hotelCtrl = require('./controllers/hotel.controller');
 
 
 
-unityMobileRouter.get('/getRelaventSearch/:filteredkeyword',function(req,res){
-    // security(req,res);userCtrl.authenticateUser(req,res);
+unityMobileRouter.get('/getRelaventSearch/:filteredkeyword',cors(),function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);  
     hotelCtrl.getRelaventSearch(req,res);
 });
 
