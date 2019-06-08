@@ -132,6 +132,11 @@ unityRouter.get('/deleteRoomDetails/:roomid',function(req,res){
     authUser(req,res);hotelCtrl.deleteRoomDetails(req,res);
 });
 
+unityRouter.post('/SaveAminityDetails/',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);masterCtrl.SaveAminityDetails(req,res);
+});
+
 
 
 module.exports = unityRouter;
