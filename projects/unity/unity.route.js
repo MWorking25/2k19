@@ -24,6 +24,7 @@ const authUser = require('./security/UserAuth');
 const userCtrl = require('./controllers/users.controller');
 const masterCtrl = require('./controllers/masters.controller');
 const hotelCtrl = require('./controllers/hotel.controller');
+const cabsCtrl = require('./controllers/cabs.controller');
 
 //bd83b23ue83b899e2383b2383n238 token   U889436 key
 
@@ -132,9 +133,32 @@ unityRouter.get('/deleteRoomDetails/:roomid',function(req,res){
     authUser(req,res);hotelCtrl.deleteRoomDetails(req,res);
 });
 
+unityRouter.get('/getAmintiesDetails/:aminityid',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);masterCtrl.getAmintiesDetails(req,res);
+});
+
 unityRouter.post('/SaveAminityDetails/',function(req,res){
     // security(req,res);userCtrl.authenticateUser(req,res);
     authUser(req,res);masterCtrl.SaveAminityDetails(req,res);
+});
+
+unityRouter.post('/DeleteAminityDetails/',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);masterCtrl.DeleteAminityDetails(req,res);
+});
+unityRouter.get('/getVehicalsListList/',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);cabsCtrl.getVehicalsListList(req,res);
+});
+
+unityRouter.post('/saveVehicalDetails/',upload.any(),function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);cabsCtrl.saveVehicalDetails(req,res);
+});
+unityRouter.post('/uploadVehicalDocs/',upload.any(),function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);cabsCtrl.uploadVehicalDocs(req,res);
 });
 
 

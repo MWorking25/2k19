@@ -9,6 +9,9 @@
         "Query":"CREATE TABLE IF NOT EXISTS `hotel_pics` ( `id` INT NOT NULL AUTO_INCREMENT , `hotelid` INT NULL , `filename` VARCHAR(400) NULL , `description` VARCHAR(5000) NULL , `createdby` INT NULL , `createddate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB;"
     },
     {
+        "Query":"CREATE TABLE IF NOT EXISTS `hotel_aminity_assign` ( `id` INT NOT NULL AUTO_INCREMENT , `hotelid` INT NULL  DEFAULT NULL ,`roomid`  INT NULL  DEFAULT NULL,`amintyid`  INT NULL  DEFAULT NULL, `createdby` INT NULL  DEFAULT NULL, `createddate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB;"
+    },
+    {
         "Query":"CREATE TABLE IF NOT EXISTS `hotel_reviews` ( `id` INT NOT NULL AUTO_INCREMENT , `hotelid` INT NULL , `reviewedby` INT NULL , `review` FLOAT NULL , `createddate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB;"
     },
     {

@@ -985,6 +985,67 @@ exports.getAmintiesListList = function (req, res) {
 };
 
 
+exports.getAmintiesDetails = function (req, res) {
+    if (req.decoded.success == true) {
+        connection.acquire(function (err, con) {
+            con.query('SELECT * FROM `hotel_aminities` WHERE `id` = '+ req.params.aminityid, function (err, result) {
+                if (err) {
+                    logger.writeLogs({
+                        path: "master.controller/getAmintiesDetails",
+                        line: "",
+                        message: err
+                    }, 'error');
+
+
+                    res.send({
+                        status: 0,
+                        type: "error",
+                        title: "Oops!",
+                        message: "Something went worng, Please try again letter"
+                    });
+                    con.release();
+                } else {
+                    
+
+                    con.query('SELECT * FROM `hotel_subaminities` WHERE `aminityid` = '+ req.params.aminityid, function (err, subaminities) {
+                        if (err) {
+                            logger.writeLogs({
+                                path: "master.controller/getAmintiesDetails",
+                                line: "",
+                                message: err
+                            }, 'error');
+        
+        
+                            res.send({
+                                status: 0,
+                                type: "error",
+                                title: "Oops!",
+                                message: "Something went worng, Please try again letter"
+                            });
+                            con.release();
+                        } else {
+                            res.send({master:result,subaminities:subaminities});
+                            con.release();
+                        }
+                    });
+
+
+                }
+            });
+        });
+    } else {
+
+        res.send({
+            success: false,
+            type: "error",
+            title: "Oops!",
+            message: 'Invalid token.',
+        });
+
+    }
+};
+
+
 exports.DeleteUsersDetails = function (req, res) {
     if (req.decoded.success == true) {
         connection.acquire(function (err, con) {
@@ -1038,7 +1099,15 @@ exports.DeleteUsersDetails = function (req, res) {
 exports.SaveAminityDetails = function (req, res) {
     if (req.decoded.success == true) {
         connection.acquire(function (err, con) {
-            con.query("SELECT COUNT(*) as aminityexist FROM `hotel_aminities` WHERE `amenity` = ?", [req.body[0].amenity], function (err, result) {
+            if(req.body[0].id > 0)
+            {
+                var verificationsql = "SELECT COUNT(*) as aminityexist FROM `hotel_aminities` WHERE `amenity` = ? AND id != ?"
+            }
+            else
+            {
+                var verificationsql = "SELECT COUNT(*) as aminityexist FROM `hotel_aminities` WHERE `amenity` = ?"
+            }
+            con.query(verificationsql, [req.body[0].amenity,req.body[0].id], function (err, result) {
                 if (err) {
 
                     logger.writeLogs({
@@ -1099,21 +1168,30 @@ exports.SaveAminityDetails = function (req, res) {
                             con.release();
                         } else {
 
+
+                            if(result.insertId > 0)
+                             {
+                                var masterid = result.insertId;
+                             }
+                             else
+                             {
+                                var masterid = req.body[0].id;
+                             }
+
                             var ss = '';
                             for(var i = 0 ; i < req.body[0].AminitiesList.length ; i++)
                             {
 
-                                if(req.body[0].AminitiesList[i].id)
+                                if(req.body[0].AminitiesList[i].id > 0)
                                 {
                                     ss+='UPDATE `hotel_subaminities` SET `name`= "'+req.body[0].AminitiesList[i].name+'" WHERE `id` = '+req.body[0].AminitiesList[i].id+';';
                                 }
                                 else
                                 {
-                                    ss+= 'INSERT INTO `hotel_subaminities`(`aminityid`, `name`, `createdby`) VALUES ('+result.insertId+',"'+req.body[0].AminitiesList[i].name+'",'+req.decoded.id+');';
+                                    ss+= 'INSERT INTO `hotel_subaminities`(`aminityid`, `name`, `createdby`) VALUES ('+masterid+',"'+req.body[0].AminitiesList[i].name+'",'+req.decoded.id+');';
                                 }
                                 
                             }
-                           
                             con.query(ss, function (err, result) {
                                 if (err) {
         
@@ -1158,3 +1236,54 @@ exports.SaveAminityDetails = function (req, res) {
 
     }
 };
+
+exports.DeleteAminityDetails = function (req, res) {
+    if (req.decoded.success == true) {
+        connection.acquire(function (err, con) {
+            var ids = '(';
+            for (var i = 0; i < req.body.length; i++) {
+                ids += req.body[i].id + ',';
+            }
+            ids = ids.substring(0, ids.length - 1) + ')';
+
+            con.query("DELETE FROM `hotel_subaminities` WHERE `aminityid` IN "+ids+" ;DELETE FROM `hotel_aminities` WHERE `id` IN  " + ids, function (err, result) {
+                if (err) {
+
+                    logger.writeLogs({
+                        path: "master.controller/DeleteUsersDetails",
+                        line: "",
+                        message: err
+                    }, 'error');
+
+
+                    res.send({
+                        status: 0,
+                        type: "error",
+                        title: "Oops!",
+                        message: "Something went worng, Please try again letter"
+                    });
+                    con.release();
+                } else {
+                    res.send({
+                        status: 1,
+                        message: "Aminity details deleted successfully.",
+                        type: "success",
+                        title: "Done!"
+                    });
+                    con.release();
+                }
+            });
+        });
+    } else {
+
+        res.send({
+            success: false,
+            type: "error",
+            title: "Oops!",
+            message: 'Invalid token.',
+        });
+
+    }
+};
+
+
