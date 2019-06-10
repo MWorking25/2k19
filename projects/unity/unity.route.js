@@ -152,6 +152,16 @@ unityRouter.get('/getVehicalsListList/',function(req,res){
     authUser(req,res);cabsCtrl.getVehicalsListList(req,res);
 });
 
+unityRouter.get('/deleteVehicalDocDetails/:docid',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);cabsCtrl.deleteVehicalDocDetails(req,res);
+});
+
+unityRouter.get('/getVehicalDetails/:vehicalid',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);cabsCtrl.getVehicalDetails(req,res);
+});
+
 unityRouter.post('/saveVehicalDetails/',upload.any(),function(req,res){
     // security(req,res);userCtrl.authenticateUser(req,res);
     authUser(req,res);cabsCtrl.saveVehicalDetails(req,res);
@@ -159,6 +169,11 @@ unityRouter.post('/saveVehicalDetails/',upload.any(),function(req,res){
 unityRouter.post('/uploadVehicalDocs/',upload.any(),function(req,res){
     // security(req,res);userCtrl.authenticateUser(req,res);
     authUser(req,res);cabsCtrl.uploadVehicalDocs(req,res);
+});
+
+unityRouter.post('/uploadvehicalImages/',upload.any(),function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);cabsCtrl.uploadvehicalImages(req,res);
 });
 
 

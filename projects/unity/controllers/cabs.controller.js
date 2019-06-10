@@ -136,8 +136,6 @@ exports.saveVehicalDetails = function(req,res)
 
 exports.uploadVehicalDocs = function(req,res)
    {
-    console.log(req.files);
-    console.log(req.body.vehicalDocDetails);
          if(req.decoded.success == true) {
             connection.acquire(function (err, con) {
                 if (req.files && req.body.vehicalDocDetails) {
@@ -189,6 +187,225 @@ exports.uploadVehicalDocs = function(req,res)
                             vehicalid:result.insertId
                         });
                         con.release();
+                    }
+                });
+            });
+        }
+        else {
+
+            res.send({
+                success: false,
+                type: "error",
+                title: "Oops!",
+                message: 'Invalid token.',
+            });
+
+        } 
+};
+
+exports.uploadvehicalImages = function(req,res)
+   {                                                                                                      
+          if(req.decoded.success == true) {
+            connection.acquire(function (err, con) {
+                if (req.files && req.body.description) {
+                    var description = JSON.parse(req.body.description);
+                    description.coverpic = req.files[0].filename;
+                } else {
+                    var description = req.body;
+                }
+    
+                description.createdby = req.decoded.id;
+    
+                if(description.id > 0)
+                {
+                   var sql  = 'UPDATE `vehical_pics` SET ? WHERE id = ?';
+                   var fieldobject = [description,description.id];
+                }
+                else 
+                {
+                    var sql = 'INSERT INTO `vehical_pics` SET ?';
+                    var fieldobject = description;
+                }
+    
+                con.query(sql,fieldobject,function(err,result){
+                    if(err)
+                    {
+                        logger.writeLogs({
+                            path: "cabCtrl.controller/uploadVehicalDocs",
+                            line: "",
+                            message: err
+                        }, 'error');
+    
+    
+                        res.send({
+                            status: 0,
+                            type: "error",
+                            title: "Oops!",
+                            message: "Something went worng, Please try again letter"
+                        });
+                        con.release();
+                    }
+                    else
+                    {
+                        
+                        res.send({
+                            status: 1,
+                            type: "success",
+                            title: "Done!",
+                            message: "Vehical details saved successfully",
+                            vehicalid:result.insertId
+                        });
+                        con.release();
+                    }
+                });
+            });
+        }
+        else {
+
+            res.send({
+                success: false,
+                type: "error",
+                title: "Oops!",
+                message: 'Invalid token.',
+            });
+
+        }  
+};
+
+
+exports.deleteVehicalDocDetails = function(req,res)
+   {
+         if(req.decoded.success == true) {
+            connection.acquire(function (err, con) {    
+                con.query("DELETE FROM `vehical_docs` WHERE `id` = "+req.params.docid,function(err,result){
+                    if(err)
+                    {
+                        logger.writeLogs({
+                            path: "cabCtrl.controller/deleteVehicalDocDetails",
+                            line: "",
+                            message: err
+                        }, 'error');
+    
+    
+                        res.send({
+                            status: 0,
+                            type: "error",
+                            title: "Oops!",
+                            message: "Something went worng, Please try again letter"
+                        });
+                        con.release();
+                    }
+                    else
+                    {
+                        
+                        res.send({
+                            status: 1,
+                            type: "success",
+                            title: "Done!",
+                            message: "Vehical document deleted successfully",
+                            vehicalid:result.insertId
+                        });
+                        con.release();
+                    }
+                });
+            });
+        }
+        else {
+
+            res.send({
+                success: false,
+                type: "error",
+                title: "Oops!",
+                message: 'Invalid token.',
+            });
+
+        } 
+};
+
+
+exports.getVehicalDetails = function(req,res)
+   {
+         if(req.decoded.success == true) {
+            connection.acquire(function (err, con) {    
+                con.query("SELECT * FROM `vehical` WHERE `id` = "+req.params.vehicalid,function(err,vehicalDetails){
+                    if(err)
+                    {
+                        logger.writeLogs({
+                            path: "cabCtrl.controller/getVehicalDetails",
+                            line: "",
+                            message: err
+                        }, 'error');
+    
+    
+                        res.send({
+                            status: 0,
+                            type: "error",
+                            title: "Oops!",
+                            message: "Something went worng, Please try again letter"
+                        });
+                        con.release();
+                    }
+                    else
+                    {
+                        if(vehicalDetails.length > 0)
+                        {
+                            con.query("SELECT `id`,`docname`,`vehicalid`,CONCAT('http://localhost:3800/unity/uploads/',`docimg`) AS `docimg` FROM `vehical_docs` WHERE `vehicalid` = "+req.params.vehicalid,function(err,vehicalDocs){
+                                if(err)
+                                {
+                                    logger.writeLogs({
+                                        path: "cabCtrl.controller/getVehicalDetails",
+                                        line: "",
+                                        message: err
+                                    }, 'error');
+                
+                
+                                    res.send({
+                                        status: 0,
+                                        type: "error",
+                                        title: "Oops!",
+                                        message: "Something went worng, Please try again letter"
+                                    });
+                                    con.release();
+                                }
+                                else
+                                {
+                                    con.query("SELECT `id`,`vehicalid`,`description`,CONCAT('http://localhost:3800/unity/uploads/',`coverpic`) as `coverpic` FROM `vehical_pics` WHERE `vehicalid` =  "+req.params.vehicalid,function(err,vehicalImages){
+                                        if(err)
+                                        {
+                                            logger.writeLogs({
+                                                path: "cabCtrl.controller/getVehicalDetails",
+                                                line: "",
+                                                message: err
+                                            }, 'error');
+                        
+                        
+                                            res.send({
+                                                status: 0,
+                                                type: "error",
+                                                title: "Oops!",
+                                                message: "Something went worng, Please try again letter"
+                                            });
+                                            con.release();
+                                        }
+                                        else
+                                        {
+                                            res.send({vehicalDetails:vehicalDetails,vehicalDocs:vehicalDocs,vehicalImages:vehicalImages});
+                                            con.release();
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                        else
+                        {
+                            res.send({
+                                status: 0,
+                                type: "success",
+                                title: "Done!",
+                                message: "No record found"
+                            });
+                            con.release();   
+                        }
                     }
                 });
             });
