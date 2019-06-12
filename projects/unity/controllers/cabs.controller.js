@@ -75,6 +75,7 @@ exports.saveVehicalDetails = function(req,res)
                 var vehicalDetails = req.body;
             }
 
+            
             vehicalDetails.createdby = req.decoded.id;
 
             if(vehicalDetails.id > 0)
@@ -144,6 +145,7 @@ exports.uploadVehicalDocs = function(req,res)
                 } else {
                     var vehicalDocDetails = req.body;
                 }
+                delete vehicalDocDetails.docfilename
     
                 vehicalDocDetails.createdby = req.decoded.id;
     
@@ -212,6 +214,7 @@ exports.uploadvehicalImages = function(req,res)
                     description.coverpic = req.files[0].filename;
                 } else {
                     var description = req.body;
+                    delete description.coverpictemp
                 }
     
                 description.createdby = req.decoded.id;
@@ -327,7 +330,7 @@ exports.getVehicalDetails = function(req,res)
    {
          if(req.decoded.success == true) {
             connection.acquire(function (err, con) {    
-                con.query("SELECT * FROM `vehical` WHERE `id` = "+req.params.vehicalid,function(err,vehicalDetails){
+                con.query("SELECT *,CONCAT('http://localhost:3800/unity/uploads/',coverpic) as tmpcoverpic FROM `vehical` WHERE `id` = "+req.params.vehicalid,function(err,vehicalDetails){
                     if(err)
                     {
                         logger.writeLogs({
@@ -349,7 +352,7 @@ exports.getVehicalDetails = function(req,res)
                     {
                         if(vehicalDetails.length > 0)
                         {
-                            con.query("SELECT `id`,`docname`,`vehicalid`,CONCAT('http://localhost:3800/unity/uploads/',`docimg`) AS `docimg` FROM `vehical_docs` WHERE `vehicalid` = "+req.params.vehicalid,function(err,vehicalDocs){
+                            con.query("SELECT `id`,`docname`,`vehicalid`,`docimg`,CONCAT('http://localhost:3800/unity/uploads/',`docimg`) AS `docimgtemp` FROM `vehical_docs` WHERE `vehicalid` = "+req.params.vehicalid,function(err,vehicalDocs){
                                 if(err)
                                 {
                                     logger.writeLogs({
@@ -369,7 +372,7 @@ exports.getVehicalDetails = function(req,res)
                                 }
                                 else
                                 {
-                                    con.query("SELECT `id`,`vehicalid`,`description`,CONCAT('http://localhost:3800/unity/uploads/',`coverpic`) as `coverpic` FROM `vehical_pics` WHERE `vehicalid` =  "+req.params.vehicalid,function(err,vehicalImages){
+                                    con.query("SELECT `id`,`vehicalid`,`description`,`coverpic`,CONCAT('http://localhost:3800/unity/uploads/',`coverpic`) as `coverpictemp` FROM `vehical_pics` WHERE `vehicalid` =  "+req.params.vehicalid,function(err,vehicalImages){
                                         if(err)
                                         {
                                             logger.writeLogs({

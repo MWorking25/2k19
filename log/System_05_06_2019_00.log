@@ -1,7 +1,0 @@
-{"message":"GET /api/unity/getExistingLocations/ 404 170 - 6.969 ms\n- - Time: Wed Jun 05 2019 00:39:34 GMT+0530 (India Standard Time)","level":"info"}
-{"message":"GET /api/unity/getRelaventSearch/maharashtra 200 50 - 33.792 ms\n- - Time: Wed Jun 05 2019 00:39:51 GMT+0530 (India Standard Time)","level":"info"}
-{"message":"GET /api/unity/getRelaventSearch/mahar 200 539 - 28.540 ms\n- - Time: Wed Jun 05 2019 00:43:40 GMT+0530 (India Standard Time)","level":"info"}
-{"message":"GET /api/unity/getRelaventSearch/mahar 304 - - 33.723 ms\n- - Time: Wed Jun 05 2019 00:43:59 GMT+0530 (India Standard Time)","level":"info"}
-{"message":"GET /favicon.ico 404 150 - 1.367 ms\n- - Time: Wed Jun 05 2019 00:43:59 GMT+0530 (India Standard Time)","level":"info"}
-{"message":"GET /api/unity/getExistingLocations/ 404 170 - 0.824 ms\n- - Time: Wed Jun 05 2019 00:44:48 GMT+0530 (India Standard Time)","level":"info"}
-{"message":"GET /api/unity/getRelaventSearch/maharas 200 50 - 35.483 ms\n- - Time: Wed Jun 05 2019 00:45:05 GMT+0530 (India Standard Time)","level":"info"}
