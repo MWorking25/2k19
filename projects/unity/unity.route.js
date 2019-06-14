@@ -25,6 +25,7 @@ const userCtrl = require('./controllers/users.controller');
 const masterCtrl = require('./controllers/masters.controller');
 const hotelCtrl = require('./controllers/hotel.controller');
 const cabsCtrl = require('./controllers/cabs.controller');
+const expCtrl = require('./controllers/experiences.controller');
 
 //bd83b23ue83b899e2383b2383n238 token   U889436 key
 
@@ -174,6 +175,11 @@ unityRouter.post('/uploadVehicalDocs/',upload.any(),function(req,res){
 unityRouter.post('/uploadvehicalImages/',upload.any(),function(req,res){
     // security(req,res);userCtrl.authenticateUser(req,res);
     authUser(req,res);cabsCtrl.uploadvehicalImages(req,res);
+});
+
+unityRouter.get('/CruzsList/',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);expCtrl.getCruzList(req,res);
 });
 
 

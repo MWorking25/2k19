@@ -323,7 +323,7 @@ exports.HotelsList = function (req, res) {
             }
             else
             {
-                    var sql  ="SELECT `id`,`name`,`addressline1`,`addressline2`,`email`,`mobile1`,DATE_FORMAT(`created_date`,'%d-%m-%Y') as createddate,(CASE WHEN status =0 THEN 'Active' ELSE 'Blocked' END) as activestatus,(CASE WHEN area >0 THEN (SELECT areas.name FROM areas WHERE areas.id = hotel_master.area) ELSE '' END) as areaname,(CASE WHEN `city` >0 THEN (SELECT cities.name FROM cities WHERE cities.id = hotel_master.`city`) ELSE '' END) as cityname,(CASE WHEN `state` >0 THEN (SELECT states.name FROM states WHERE states.id = hotel_master.`state`) ELSE '' END) as statename,(CASE WHEN `country` >0 THEN (SELECT countries.name FROM countries WHERE countries.id = hotel_master.`country`) ELSE '' END) as countryname FROM `hotel_master` WHERE  WHERE status != 2 AND created_by = "+req.decoded.id;
+                    var sql  ="SELECT `id`,`name`,`addressline1`,`addressline2`,`email`,`mobile1`,DATE_FORMAT(`created_date`,'%d-%m-%Y') as createddate,(CASE WHEN status =0 THEN 'Active' ELSE 'Blocked' END) as activestatus,(CASE WHEN area >0 THEN (SELECT areas.name FROM areas WHERE areas.id = hotel_master.area) ELSE '' END) as areaname,(CASE WHEN `city` >0 THEN (SELECT cities.name FROM cities WHERE cities.id = hotel_master.`city`) ELSE '' END) as cityname,(CASE WHEN `state` >0 THEN (SELECT states.name FROM states WHERE states.id = hotel_master.`state`) ELSE '' END) as statename,(CASE WHEN `country` >0 THEN (SELECT countries.name FROM countries WHERE countries.id = hotel_master.`country`) ELSE '' END) as countryname FROM `hotel_master` WHERE  status != 2 AND created_by = "+req.decoded.id;
             }
 
                 con.query(sql, function (err, result) {
