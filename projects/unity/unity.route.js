@@ -182,6 +182,36 @@ unityRouter.get('/CruzsList/',function(req,res){
     authUser(req,res);expCtrl.getCruzList(req,res);
 });
 
+unityRouter.post('/SaveCruzDetails/',upload.any(),function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);expCtrl.SaveCruzDetails(req,res);
+});
+
+unityRouter.get('/deleteCruzServiceDetails/:serviceid',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);expCtrl.deleteCruzServiceDetails(req,res);
+});
+
+unityRouter.get('/getCruzDetails/:cruzid',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);expCtrl.getCruzDetails(req,res);
+});
+
+unityRouter.get('/deleteCruzTimeSlotsDetails/:timeslotid',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);expCtrl.deleteCruzTimeSlotsDetails(req,res);
+});
+
+unityRouter.post('/SaveCruzServicesDetails/',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);expCtrl.SaveCruzServicesDetails(req,res);
+});
+
+unityRouter.post('/SaveCruzTimeSlotsDetails/',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);expCtrl.SaveCruzTimeSlotsDetails(req,res);
+});
+
 
 
 module.exports = unityRouter;
