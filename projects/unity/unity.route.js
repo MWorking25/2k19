@@ -187,6 +187,11 @@ unityRouter.post('/SaveCruzDetails/',upload.any(),function(req,res){
     authUser(req,res);expCtrl.SaveCruzDetails(req,res);
 });
 
+unityRouter.post('/uploadCruzImages/',upload.any(),function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);expCtrl.uploadCruzImages(req,res);
+});
+
 unityRouter.get('/deleteCruzServiceDetails/:serviceid',function(req,res){
     // security(req,res);userCtrl.authenticateUser(req,res);
     authUser(req,res);expCtrl.deleteCruzServiceDetails(req,res);
@@ -202,6 +207,11 @@ unityRouter.get('/deleteCruzTimeSlotsDetails/:timeslotid',function(req,res){
     authUser(req,res);expCtrl.deleteCruzTimeSlotsDetails(req,res);
 });
 
+unityRouter.get('/RemoveGalleryImage/:imgid',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);expCtrl.RemoveGalleryImage(req,res);
+});
+
 unityRouter.post('/SaveCruzServicesDetails/',function(req,res){
     // security(req,res);userCtrl.authenticateUser(req,res);
     authUser(req,res);expCtrl.SaveCruzServicesDetails(req,res);
@@ -210,6 +220,11 @@ unityRouter.post('/SaveCruzServicesDetails/',function(req,res){
 unityRouter.post('/SaveCruzTimeSlotsDetails/',function(req,res){
     // security(req,res);userCtrl.authenticateUser(req,res);
     authUser(req,res);expCtrl.SaveCruzTimeSlotsDetails(req,res);
+});
+
+unityRouter.post('/DeleteCruzDetails/',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);expCtrl.DeleteCruzDetails(req,res);
 });
 
 
