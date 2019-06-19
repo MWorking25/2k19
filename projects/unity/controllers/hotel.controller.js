@@ -364,7 +364,7 @@ exports.HotelsList = function (req, res) {
 
 exports.getRelaventSearch = function (req, res) {
     connection.acquire(function (err, con) {
-            con.query("SELECT areas.`name` AS serachresult,(CASE WHEN areas.cityid > 0 THEN (SELECT CONCAT(cities.name,', ',(SELECT states.name FROM states WHERE states.id = cities.state_id),', ',(SELECT countries.name FROM countries WHERE countries.id = (SELECT states.country_id FROM states WHERE states.id = cities.state_id LIMIT 1))) FROM cities WHERE cities.id = areas.cityid) ELSE '' END) as address, 'Place' as type FROM `areas` WHERE areas.name LIKE'%"+req.params.filteredkeyword+"%' UNION SELECT hotel_master.name as serachresult ,CONCAT((CASE WHEN hotel_master.area > 0 THEN (SELECT areas.name FROM areas WHERE areas.id = hotel_master.area) ELSE '' END),', ',(CASE WHEN hotel_master.city > 0 THEN (SELECT cities.name FROM cities WHERE cities.id = hotel_master.city) ELSE '' END),', ',(CASE WHEN hotel_master.state > 0 THEN (SELECT states.name FROM states WHERE states.id = hotel_master.state) ELSE '' END),', ',(CASE WHEN hotel_master.country > 0 THEN (SELECT countries.name FROM countries WHERE countries.id = hotel_master.country) ELSE '' END)) AS address, 'Place' as type FROM hotel_master WHERE hotel_master.name LIKE'%"+req.params.filteredkeyword+"%' UNION SELECT cities.name AS serachresult , CONCAT((SELECT states.name FROM states WHERE states.id = cities.state_id),', ',(SELECT countries.name FROM countries WHERE countries.id = (SELECT states.country_id FROM states WHERE states.id = cities.state_id))) as address, 'City' as type FROM cities  WHERE cities.name LIKE'%"+req.params.filteredkeyword+"%' UNION SELECT states.name AS serachresult , (SELECT countries.name FROM countries WHERE countries.id = states.country_id) as address, 'State' as type FROM states WHERE states.name LIKE'%"+req.params.filteredkeyword+"%'", function (err, result) {
+            con.query("SELECT areas.`name` AS serachresult,areas.id as areaid,areas.stateid,areas.cityid, (SELECT states.country_id FROM states WHERE states.id = areas.stateid) as countryid,(CASE WHEN areas.cityid > 0 THEN (SELECT CONCAT(cities.name,', ',(SELECT states.name FROM states WHERE states.id = cities.state_id),', ',(SELECT countries.name FROM countries WHERE countries.id = (SELECT states.country_id FROM states WHERE states.id = cities.state_id LIMIT 1))) FROM cities WHERE cities.id = areas.cityid) ELSE '' END) as address, 'Place' as type FROM `areas` WHERE areas.name LIKE '%"+req.params.filteredkeyword+"%' UNION SELECT hotel_master.name as serachresult ,hotel_master.area as areaid,hotel_master.state as stateid,hotel_master.city as cityid,hotel_master.country as countryid,CONCAT((CASE WHEN hotel_master.area > 0 THEN (SELECT areas.name FROM areas WHERE areas.id = hotel_master.area) ELSE '' END),', ',(CASE WHEN hotel_master.city > 0 THEN (SELECT cities.name FROM cities WHERE cities.id = hotel_master.city) ELSE '' END),', ',(CASE WHEN hotel_master.state > 0 THEN (SELECT states.name FROM states WHERE states.id = hotel_master.state) ELSE '' END),', ',(CASE WHEN hotel_master.country > 0 THEN (SELECT countries.name FROM countries WHERE countries.id = hotel_master.country) ELSE '' END)) AS address, 'Place' as type FROM hotel_master WHERE hotel_master.name LIKE '%"+req.params.filteredkeyword+"%' UNION SELECT cities.name AS serachresult ,0 as areaid,cities.state_id as stateid, cities.id AS cityid,(SELECT states.country_id FROM states WHERE states.id = cities.state_id) as countryid, CONCAT((SELECT states.name FROM states WHERE states.id = cities.state_id),', ',(SELECT countries.name FROM countries WHERE countries.id = (SELECT states.country_id FROM states WHERE states.id = cities.state_id))) as address, 'City' as type FROM cities  WHERE cities.name LIKE '%"+req.params.filteredkeyword+"%' UNION SELECT states.name AS serachresult ,0 as areaid,states.id as stateid,0 as cityid,states.country_id as countryid, (SELECT countries.name FROM countries WHERE countries.id = states.country_id) as address, 'State' as type FROM states WHERE states.name LIKE '%"+req.params.filteredkeyword+"%'", function (err, result) {
                 if (err) {
 
                     logger.writeLogs({
@@ -546,4 +546,34 @@ exports.deleteRoomDetails = function (req, res) {
         });
 
     } 
+};
+
+exports.getHotelsListOnFilters = function (req, res) {
+
+    console.log(req.body);
+
+        connection.acquire(function (err, con) {
+                con.query("SELECT `id`,`name`,CONCAT('http://localhost:3800/unity/uploads/',`bannerimg`) AS bannerinage,description,IFNULL((SELECT hotel_rooms.price FROM hotel_rooms WHERE hotel_rooms.hotelid = hotel_master.id AND hotel_rooms.price > 0 ORDER BY hotel_rooms.price ASC LIMIT 1),0) as price,IFNULL((SELECT hotel_rooms.discounted_price FROM hotel_rooms WHERE hotel_rooms.hotelid = hotel_master.id AND hotel_rooms.discounted_price > 0 ORDER BY hotel_rooms.discounted_price ASC LIMIT 1),0) as discounted_price FROM `hotel_master` WHERE hotel_master.status != 2 AND (hotel_master.name LIKE '%"+req.body.location.serachresult+"%' OR hotel_master.area = "+req.body.location.areaid+"  OR hotel_master.city = "+req.body.location.cityid+" OR hotel_master.state = "+req.body.location.stateid+" OR hotel_master.country = "+req.body.location.countryid+")", function (err, result) {
+                    if (err) {
+    
+                        logger.writeLogs({
+                            path: "hotel.controller/deleteRoomDetails",
+                            line: "",
+                            message: err
+                        }, 'error');
+    
+                        res.send({
+                            status: 1,
+                            type: "error",
+                            title: "Oops!",
+                            message: "Something went worng, Please try again letter"
+                        });
+                        con.release();
+                    } else {
+                           
+                        res.send(result);
+                        con.release(); 
+                    }
+                });       
+        }); 
 };
