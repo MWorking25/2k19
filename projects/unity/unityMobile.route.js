@@ -27,6 +27,7 @@ const authUser = require('./security/UserAuth');
 const userCtrl = require('./controllers/users.controller');
 const masterCtrl = require('./controllers/masters.controller');
 const hotelCtrl = require('./controllers/hotel.controller');
+const expCtrl = require('./controllers/experiences.controller');
 
 
 
@@ -38,6 +39,11 @@ unityMobileRouter.get('/getRelaventSearch/:filteredkeyword',cors(),function(req,
 unityMobileRouter.post('/getHotelsList/',cors(),function(req,res){
     // security(req,res);userCtrl.authenticateUser(req,res);  
     hotelCtrl.getHotelsListOnFilters(req,res);
+});
+
+unityMobileRouter.post('/getExperiencesList/',cors(),function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);  
+    expCtrl.getExperiencesList(req,res);
 });
 
 

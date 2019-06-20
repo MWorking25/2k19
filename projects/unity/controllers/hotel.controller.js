@@ -1,10 +1,11 @@
 const logger = require('../config/logger'),
     express = require('express'),
     connection = require('../config/connection'),
+    env= require('../config/env/env'),
     app = express();
 var sendMail = require('./mail.controller');
 
-
+var fileUrl = env.devfilesUrl;
 
 exports.SaveHotelDetails = function (req, res) {
 
@@ -549,11 +550,8 @@ exports.deleteRoomDetails = function (req, res) {
 };
 
 exports.getHotelsListOnFilters = function (req, res) {
-
-    console.log(req.body);
-
         connection.acquire(function (err, con) {
-                con.query("SELECT `id`,`name`,CONCAT('http://localhost:3800/unity/uploads/',`bannerimg`) AS bannerinage,description,IFNULL((SELECT hotel_rooms.price FROM hotel_rooms WHERE hotel_rooms.hotelid = hotel_master.id AND hotel_rooms.price > 0 ORDER BY hotel_rooms.price ASC LIMIT 1),0) as price,IFNULL((SELECT hotel_rooms.discounted_price FROM hotel_rooms WHERE hotel_rooms.hotelid = hotel_master.id AND hotel_rooms.discounted_price > 0 ORDER BY hotel_rooms.discounted_price ASC LIMIT 1),0) as discounted_price FROM `hotel_master` WHERE hotel_master.status != 2 AND (hotel_master.name LIKE '%"+req.body.location.serachresult+"%' OR hotel_master.area = "+req.body.location.areaid+"  OR hotel_master.city = "+req.body.location.cityid+" OR hotel_master.state = "+req.body.location.stateid+" OR hotel_master.country = "+req.body.location.countryid+")", function (err, result) {
+                con.query("SELECT `id`,`name`,CONCAT('"+fileUrl+"',`bannerimg`) AS bannerinage,description,IFNULL((SELECT hotel_rooms.price FROM hotel_rooms WHERE hotel_rooms.hotelid = hotel_master.id AND hotel_rooms.price > 0 ORDER BY hotel_rooms.price ASC LIMIT 1),0) as price,IFNULL((SELECT hotel_rooms.discounted_price FROM hotel_rooms WHERE hotel_rooms.hotelid = hotel_master.id AND hotel_rooms.discounted_price > 0 ORDER BY hotel_rooms.discounted_price ASC LIMIT 1),0) as discounted_price FROM `hotel_master` WHERE hotel_master.status != 2 AND (hotel_master.name LIKE '%"+req.body.location.serachresult+"%' OR hotel_master.area = "+req.body.location.areaid+"  OR hotel_master.city = "+req.body.location.cityid+" OR hotel_master.state = "+req.body.location.stateid+" OR hotel_master.country = "+req.body.location.countryid+")", function (err, result) {
                     if (err) {
     
                         logger.writeLogs({

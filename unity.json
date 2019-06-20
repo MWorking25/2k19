@@ -86,4 +86,10 @@
     ,{
         "Query":"CREATE TABLE IF NOT EXISTS `cruz_booking_services` ( `id` INT NOT NULL AUTO_INCREMENT , `cruzid` INT NULL DEFAULT NULL , `bookingid` INT NULL DEFAULT NULL , `servicename` VARCHAR(500) NULL DEFAULT NULL , `servicevalue` VARCHAR(5000) NULL DEFAULT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;"
     }
+    ,{
+        "Query":"CREATE TABLE IF NOT EXISTS `experience_likes` ( `id` INT NOT NULL AUTO_INCREMENT , `expid` INT NULL DEFAULT NULL , `memberid` INT NULL DEFAULT NULL , `like`  INT NULL DEFAULT 0, PRIMARY KEY (`id`)) ENGINE = InnoDB;ALTER TABLE `experience_likes` ADD  IF NOT EXISTS `createddate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `like`"
+    }
+    ,{
+        "Query":"CREATE TABLE IF NOT EXISTS `experience_review` ( `id` INT NOT NULL AUTO_INCREMENT , `expid` INT NULL DEFAULT NULL , `memberid` INT NULL DEFAULT NULL , `comment` VARCHAR(5000) NULL DEFAULT NULL, PRIMARY KEY (`id`)) ENGINE = InnoDB;ALTER TABLE `experience_review` ADD  IF NOT EXISTS `createddate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `comment`"
+    }
 ]

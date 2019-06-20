@@ -1,10 +1,11 @@
 const logger = require('../config/logger'),
     express = require('express'),
     connection = require('../config/connection'),
+    env= require('../config/env/env'),
     app = express();
 var sendMail = require('./mail.controller');
 
-
+var fileUrl = env.devfilesUrl;
 
 
 exports.getCruzList = function (req, res) {
@@ -208,7 +209,7 @@ exports.getCruzDetails = function (req, res) {
                        con.release();
                    } else {
 
-                    con.query("SELECT *,CONCAT('http://localhost:3800/unity/uploads/',filename) AS tmpfilename FROM `cruzegallery` WHERE `cruzeid` =  "+req.params.cruzid, function (err, result_cruzGallery) {
+                    con.query("SELECT *,CONCAT('"+fileUrl+"',filename) AS tmpfilename FROM `cruzegallery` WHERE `cruzeid` =  "+req.params.cruzid, function (err, result_cruzGallery) {
                         if (err) {
         
                             logger.writeLogs({
@@ -693,4 +694,30 @@ exports.DeleteCruzDetails = function (req, res) {
        });
 
    } 
+};
+
+
+exports.getExperiencesList = function (req, res) {
+       connection.acquire(function (err, con) {
+               con.query("SELECT `id`,`name`,`description`,`price`,`discounted_price`,CONCAT('"+fileUrl+"',`coverpic`) AS bannerinage,`coverpic`,(SELECT COUNT(*) FROM experience_review WHERE experience_review.expid = cruze.id) as expreviews,(SELECT COUNT(*) FROM experience_likes WHERE experience_likes.like = 1 AND experience_likes.expid = cruze.id) as explikes FROM `cruze` WHERE `deletestatus` != 2", function (err, result) {
+                   if (err) {
+                       logger.writeLogs({
+                           path: "experiences.controller/getExperiencesList",
+                           line: "",
+                           message: err
+                       }, 'error');
+   
+                       res.send({
+                           status: 1,
+                           type: "error",
+                           title: "Oops!",
+                           message: "Something went worng, Please try again letter"
+                       });
+                       con.release();
+                   } else {
+                        res.send(result);
+                        con.release();
+                   }
+               });       
+       });
 };
