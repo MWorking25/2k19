@@ -46,6 +46,11 @@ unityMobileRouter.post('/getExperiencesList/',cors(),function(req,res){
     expCtrl.getExperiencesList(req,res);
 });
 
+unityMobileRouter.post('/saveMemberDetails/',cors(),function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);  
+    masterCtrl.saveMemberDetails(req,res);
+});
+
 
 
 

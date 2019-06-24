@@ -1287,3 +1287,50 @@ exports.DeleteAminityDetails = function (req, res) {
 };
 
 
+exports.saveMemberDetails = function (req, res) {
+        connection.acquire(function (err, con) {
+
+            if(req.body.id)
+            {
+                
+                var sql  = 'UPDATE `members_master` SET ? WHERE id = ?';
+                var sqlObj = [req.body,req.body.id];
+            }
+            else
+            {
+                var sql  = 'INSERT INTO `members_master` SET ?';
+                var sqlObj = req.body;
+            }
+
+            con.query(sql,sqlObj, function (err, result) {
+                if (err) {
+
+                    logger.writeLogs({
+                        path: "master.controller/saveMemberDetails",
+                        line: "",
+                        message: err
+                    }, 'error');
+
+
+                    res.send({
+                        status: 0,
+                        type: "error",
+                        title: "Oops!",
+                        message: "Something went worng, Please try again letter"
+                    });
+                    con.release();
+                } else {
+                    res.send({
+                        status: 1,
+                        message: "Welcome!",
+                        type: "success",
+                        title: "Done!",
+                        object:{id:result.insertId,firstname:req.body.firstname,lastname:req.body.lastname,mobile:req.body.mobile,email:req.body.email}
+                    });
+                    con.release();
+                }
+            });
+        });
+};
+
+
