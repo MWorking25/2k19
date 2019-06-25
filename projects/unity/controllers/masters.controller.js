@@ -1287,22 +1287,28 @@ exports.DeleteAminityDetails = function (req, res) {
 };
 
 
+
 exports.saveMemberDetails = function (req, res) {
         connection.acquire(function (err, con) {
 
+            
+
             if(req.body.id)
             {
-                
+                var mobileverify = 'SELECT COUNT(*) AS isexist FROM `members_master` WHERE `mobile` = '+req.body.mobile+' AND `id` != '+req.body.id;
+                var emailverify = 'SELECT COUNT(*) AS isexist FROM `members_master` WHERE `email` = "'+req.body.email+'" AND `id` != '+req.body.id;
                 var sql  = 'UPDATE `members_master` SET ? WHERE id = ?';
                 var sqlObj = [req.body,req.body.id];
             }
             else
             {
+                var mobileverify = 'SELECT COUNT(*) AS isexist FROM `members_master` WHERE `mobile` = '+req.body.mobile;
+                var emailverify = 'SELECT COUNT(*) AS isexist FROM `members_master` WHERE `email` = "'+req.body.email+'"';
                 var sql  = 'INSERT INTO `members_master` SET ?';
                 var sqlObj = req.body;
             }
 
-            con.query(sql,sqlObj, function (err, result) {
+            con.query(mobileverify, function (err, mobilecount) {
                 if (err) {
 
                     logger.writeLogs({
@@ -1320,14 +1326,80 @@ exports.saveMemberDetails = function (req, res) {
                     });
                     con.release();
                 } else {
+                  if(mobilecount[0].isexist > 0)
+                  {
                     res.send({
-                        status: 1,
-                        message: "Welcome!",
-                        type: "success",
-                        title: "Done!",
-                        object:{id:result.insertId,firstname:req.body.firstname,lastname:req.body.lastname,mobile:req.body.mobile,email:req.body.email}
+                        status: 0,
+                        type: "error",
+                        title: "Oops!",
+                        message: "Mobile number already exist"
                     });
                     con.release();
+                  }
+                  else
+                  {
+                    con.query(emailverify, function (err, emailcount) {
+                        if (err) {
+        
+                            logger.writeLogs({
+                                path: "master.controller/saveMemberDetails",
+                                line: "",
+                                message: err
+                            }, 'error');
+        
+        
+                            res.send({
+                                status: 0,
+                                type: "error",
+                                title: "Oops!",
+                                message: "Something went worng, Please try again letter"
+                            });
+                            con.release();
+                        } else {
+                           if(emailcount[0].isexist > 0)
+                           {
+                            res.send({
+                                status: 0,
+                                type: "error",
+                                title: "Oops!",
+                                message: "Email id already exist"
+                            });
+                            con.release();
+                           }
+                           else
+                           {
+                            con.query(sql,sqlObj, function (err, result) {
+                                if (err) {
+                
+                                    logger.writeLogs({
+                                        path: "master.controller/saveMemberDetails",
+                                        line: "",
+                                        message: err
+                                    }, 'error');
+                
+                
+                                    res.send({
+                                        status: 0,
+                                        type: "error",
+                                        title: "Oops!",
+                                        message: "Something went worng, Please try again letter"
+                                    });
+                                    con.release();
+                                } else {
+                                    res.send({
+                                        status: 1,
+                                        message: "Thank You!",
+                                        type: "success",
+                                        title: "Welcome!",
+                                        object:{id:result.insertId,firstname:req.body.firstname,lastname:req.body.lastname,mobile:req.body.mobile,email:req.body.email}
+                                    });
+                                    con.release();
+                                }
+                            });
+                           }
+                        }
+                    });
+                  }
                 }
             });
         });

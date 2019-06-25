@@ -699,7 +699,7 @@ exports.DeleteCruzDetails = function (req, res) {
 
 exports.getExperiencesList = function (req, res) {
        connection.acquire(function (err, con) {
-               con.query("SELECT `id`,`name`,`description`,`price`,`discounted_price`,CONCAT('"+fileUrl+"',`coverpic`) AS bannerinage,`coverpic`,(SELECT COUNT(*) FROM experience_review WHERE experience_review.expid = cruze.id) as expreviews,(SELECT COUNT(*) FROM experience_likes WHERE experience_likes.like = 1 AND experience_likes.expid = cruze.id) as explikes FROM `cruze` WHERE `deletestatus` != 2", function (err, result) {
+               con.query("SELECT `id`,`name`,(SELECT COUNT(*) FROM `experience_likes` WHERE `like` = 1 AND `expid` = cruze.id AND `memberid` = "+req.body[0].memberdetails+") as explikebymember,`description`,`price`,`discounted_price`,CONCAT('"+fileUrl+"',`coverpic`) AS bannerinage,`coverpic`,(SELECT COUNT(*) FROM experience_review WHERE experience_review.expid = cruze.id) as expreviews,(SELECT COUNT(*) FROM experience_likes WHERE experience_likes.like = 1 AND experience_likes.expid = cruze.id) as explikes FROM `cruze` WHERE `deletestatus` != 2", function (err, result) {
                    if (err) {
                        logger.writeLogs({
                            path: "experiences.controller/getExperiencesList",
@@ -720,4 +720,63 @@ exports.getExperiencesList = function (req, res) {
                    }
                });       
        });
+};
+
+exports.HtLikeForExp = function (req, res) {
+        connection.acquire(function (err, con) {
+               con.query("SELECT COUNT(*) likeexist FROM `experience_likes` WHERE `expid` = "+req.body.exp.id+" AND `memberid` = "+req.body.member.id, function (err, result) {
+                   if (err) {
+                       logger.writeLogs({
+                           path: "experiences.controller/HtLikeForExp",
+                           line: "",
+                           message: err
+                       }, 'error');
+   
+                       res.send({
+                           status: 1,
+                           type: "error",
+                           title: "Oops!",
+                           message: "Something went worng, Please try again letter"
+                       });
+                       con.release();
+                   } else {
+                        if(result[0].likeexist > 0)
+                        {
+                            var sql = 'UPDATE `experience_likes` SET `like`= (CASE WHEN experience_likes.like = 0 THEN 1 ELSE 0 END) WHERE `expid` = '+req.body.exp.id+' AND `memberid` = '+req.body.member.id;
+                        }
+                        else
+                        {
+                            var sql = 'INSERT INTO `experience_likes`(`expid`, `memberid`, `like`) VALUES ('+req.body.exp.id+','+req.body.member.id+',1)'
+                        }
+
+
+                        con.query(sql, function (err, result) {
+                            if (err) {
+                                logger.writeLogs({
+                                    path: "experiences.controller/HtLikeForExp -2",
+                                    line: "",
+                                    message: err
+                                }, 'error');
+            
+                                res.send({
+                                    status: 1,
+                                    type: "error",
+                                    title: "Oops!",
+                                    message: "Something went worng, Please try again letter"
+                                });
+                                con.release();
+                            } else {
+                                res.send({
+                                    status: 0,
+                                    type: "success",
+                                    title: "Done!",
+                                    message: "Thank You!"
+                                });
+                                 con.release();
+                            }
+                        });       
+
+                   }
+               });       
+       }); 
 };
