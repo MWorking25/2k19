@@ -699,7 +699,7 @@ exports.DeleteCruzDetails = function (req, res) {
 
 exports.getExperiencesList = function (req, res) {
        connection.acquire(function (err, con) {
-               con.query("SELECT `id`,`name`,(SELECT COUNT(*) FROM `experience_likes` WHERE `like` = 1 AND `expid` = cruze.id AND `memberid` = "+req.body[0].memberdetails+") as explikebymember,`description`,`price`,`discounted_price`,CONCAT('"+fileUrl+"',`coverpic`) AS bannerinage,`coverpic`,(SELECT COUNT(*) FROM experience_review WHERE experience_review.expid = cruze.id) as expreviews,(SELECT COUNT(*) FROM experience_likes WHERE experience_likes.like = 1 AND experience_likes.expid = cruze.id) as explikes FROM `cruze` WHERE `deletestatus` != 2", function (err, result) {
+               con.query("SELECT 'Cruz' as exp_type,`id`,`name`,(SELECT COUNT(*) FROM `experience_likes` WHERE `like` = 1 AND `expid` = cruze.id AND `memberid` = "+req.body[0].memberdetails+") as explikebymember,`description`,`price`,`discounted_price`,CONCAT('"+fileUrl+"',`coverpic`) AS bannerinage,`coverpic`,(SELECT COUNT(*) FROM experience_review WHERE experience_review.expid = cruze.id) as expreviews,(SELECT COUNT(*) FROM experience_likes WHERE experience_likes.like = 1 AND experience_likes.expid = cruze.id) as explikes FROM `cruze` WHERE `deletestatus` != 2", function (err, result) {
                    if (err) {
                        logger.writeLogs({
                            path: "experiences.controller/getExperiencesList",
@@ -779,4 +779,39 @@ exports.HtLikeForExp = function (req, res) {
                    }
                });       
        }); 
+};
+
+
+exports.getExperienceDetails = function (req, res) {
+    connection.acquire(function (err, con) {
+        console.log(req.body)
+        if(req.body[0].exptype == 'Cruz')
+        {
+            var sql  = "SELECT *,cruze.description as masterdesc,cruz_services.description as servicedesc,(SELECT COUNT(*) FROM `experience_likes` WHERE `like` = 1 AND `expid` = cruze.id AND `memberid` = "+req.body[0].memberdetails+") as explikebymember,CONCAT('"+fileUrl+"',`coverpic`) AS bannerinage,(SELECT COUNT(*) FROM experience_review WHERE experience_review.expid = cruze.id) as expreviews,(SELECT COUNT(*) FROM experience_likes WHERE experience_likes.like = 1 AND experience_likes.expid = cruze.id) as explikes FROM `cruze`INNER JOIN cruz_services ON cruz_services.cruzid = cruze.id INNER JOIN cruzetimeslots ON cruzetimeslots.cruzeid = cruze.id  WHERE cruze.id = "+req.body[0].expid;
+        }
+        else
+        {
+            var sql = '';
+        }
+            con.query(sql, function (err, result) {
+                if (err) {
+                    logger.writeLogs({
+                        path: "experiences.controller/getExperienceDetails",
+                        line: "",
+                        message: err
+                    }, 'error');
+
+                    res.send({
+                        status: 1,
+                        type: "error",
+                        title: "Oops!",
+                        message: "Something went worng, Please try again letter"
+                    });
+                    con.release();
+                } else {
+                     res.send(result);
+                     con.release();
+                }
+            });       
+    });
 };
