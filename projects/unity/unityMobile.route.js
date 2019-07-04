@@ -61,6 +61,11 @@ unityMobileRouter.post('/getExperienceDetails/',function(req,res){
     expCtrl.getExperienceDetails(req,res);
 });
 
+unityMobileRouter.get('/getExpServices/:expid/:exptype',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);  
+    expCtrl.getExpServices(req,res);
+});
+
 
 
 

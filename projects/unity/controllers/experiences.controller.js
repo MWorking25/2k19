@@ -784,10 +784,42 @@ exports.HtLikeForExp = function (req, res) {
 
 exports.getExperienceDetails = function (req, res) {
     connection.acquire(function (err, con) {
-        console.log(req.body)
         if(req.body[0].exptype == 'Cruz')
         {
-            var sql  = "SELECT *,cruze.description as masterdesc,cruz_services.description as servicedesc,(SELECT COUNT(*) FROM `experience_likes` WHERE `like` = 1 AND `expid` = cruze.id AND `memberid` = "+req.body[0].memberdetails+") as explikebymember,CONCAT('"+fileUrl+"',`coverpic`) AS bannerinage,(SELECT COUNT(*) FROM experience_review WHERE experience_review.expid = cruze.id) as expreviews,(SELECT COUNT(*) FROM experience_likes WHERE experience_likes.like = 1 AND experience_likes.expid = cruze.id) as explikes FROM `cruze`INNER JOIN cruz_services ON cruz_services.cruzid = cruze.id INNER JOIN cruzetimeslots ON cruzetimeslots.cruzeid = cruze.id  WHERE cruze.id = "+req.body[0].expid;
+            var sql  = "SELECT *,(SELECT COUNT(*) FROM `experience_likes` WHERE `like` = 1 AND `expid` = cruze.id AND `memberid` = "+req.body[0].memberdetails+") as explikebymember,CONCAT('"+fileUrl+"',`coverpic`) AS bannerinage,(SELECT COUNT(*) FROM experience_review WHERE experience_review.expid = cruze.id) as expreviews,(SELECT COUNT(*) FROM experience_likes WHERE experience_likes.like = 1 AND experience_likes.expid = cruze.id) as explikes FROM `cruze` WHERE cruze.id = "+req.body[0].expid;
+        }
+        else
+        {
+            var sql = '';
+        }
+            con.query(sql, function (err, result) {
+                if (err) {
+                    logger.writeLogs({
+                        path: "experiences.controller/getExperienceDetails",
+                        line: "",
+                        message: err
+                    }, 'error');
+
+                    res.send({
+                        status: 1,
+                        type: "error",
+                        title: "Oops!",
+                        message: "Something went worng, Please try again letter"
+                    });
+                    con.release();
+                } else {
+                     res.send(result);
+                     con.release();
+                }
+            });       
+    });
+};
+
+exports.getExpServices = function (req, res) {
+    connection.acquire(function (err, con) {
+        if(req.params.exptype == 'Cruz')
+        {
+            var sql  = "SELECT * FROM `cruz_services` WHERE `cruzid` = "+req.params.expid;
         }
         else
         {
