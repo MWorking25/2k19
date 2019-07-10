@@ -21,17 +21,9 @@ app.use(bodyParser.json({
 
 
 //CORS Middleware
-app.use(function (req, res, next) {
-    //Enabling CORS
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, x-client-key, x-client-token, x-client-secret, Authorization");
-    next();
-   });
-
 
 app.use(express.static('public'));
-/* 
+
  var originsWhitelist = [
     'http://localhost:4200',      //this is my front-end url for development
     'http://localhost:8100',      //this is my front-end url for development
@@ -46,7 +38,7 @@ app.use(express.static('public'));
   }
   //here is the magic
   app.use(cors(corsOptions)); 
- */
+ 
 
   /*  app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");

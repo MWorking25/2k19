@@ -100,6 +100,49 @@ exports.deleteCruzServiceDetails = function (req, res) {
    } 
 };
 
+exports.SaveCruzAminities = function (req, res) {
+
+    if (req.decoded.success == true) {
+       connection.acquire(function (err, con) {
+               con.query("UPDATE cruze SET `aminities` = ? WHERE `id` = ?",[JSON.stringify(req.body),req.body[0].cruzid], function (err, result) {
+                   if (err) {
+   
+                       logger.writeLogs({
+                           path: "experiences.controller/SaveCruzAminities",
+                           line: "",
+                           message: err
+                       }, 'error');
+   
+                       res.send({
+                           status: 1,
+                           type: "error",
+                           title: "Oops!",
+                           message: "Something went worng, Please try again letter"
+                       });
+                       con.release();
+                   } else {
+                    res.send({
+                        status: 0,
+                        type: "success",
+                        title: "Done!",
+                        message: "Aminities saved successfully"
+                    });
+                       con.release();
+                   }
+               });       
+       });
+   } else {
+
+       res.send({
+           success: false,
+           type: "error",
+           title: "Oops!",
+           message: 'Invalid token.',
+       });
+
+   } 
+};
+
 exports.deleteCruzTimeSlotsDetails = function (req, res) {
 
     if (req.decoded.success == true) {
@@ -423,8 +466,6 @@ exports.SaveCruzServicesDetails = function (req, res) {
                         sql = sql+"INSERT INTO `cruz_services`(`cruzid`, `servicename`, `description`) VALUES ("+req.body[i].cruzid+",'"+req.body[i].servicename+"','"+req.body[i].description+"');";
                     }
                 }
-
-                console.log(sql)
                con.query(sql, function (err, result) {
                    if (err) {
    

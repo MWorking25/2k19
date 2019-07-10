@@ -227,6 +227,11 @@ unityRouter.post('/DeleteCruzDetails/',function(req,res){
     authUser(req,res);expCtrl.DeleteCruzDetails(req,res);
 });
 
+unityRouter.post('/SaveCruzAminities/',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);expCtrl.SaveCruzAminities(req,res);
+});
+
 
 
 module.exports = unityRouter;
