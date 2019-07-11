@@ -104,7 +104,7 @@ exports.SaveCruzAminities = function (req, res) {
 
     if (req.decoded.success == true) {
        connection.acquire(function (err, con) {
-               con.query("UPDATE cruze SET `aminities` = ? WHERE `id` = ?",[JSON.stringify(req.body),req.body[0].cruzid], function (err, result) {
+               con.query("UPDATE cruze SET `aminities` = ? WHERE `id` = ?",[JSON.stringify(req.body),parseInt(req.body[0].cruzid)], function (err, result) {
                    if (err) {
    
                        logger.writeLogs({

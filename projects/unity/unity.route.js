@@ -114,6 +114,11 @@ unityRouter.post('/SaveHotelRoomDetails/',function(req,res){
     authUser(req,res);hotelCtrl.SaveHotelRoomDetails(req,res);
 });
 
+unityRouter.post('/SavehotelAminities/',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);hotelCtrl.SavehotelAminities(req,res);
+});
+
 unityRouter.get('/HotelsList/',function(req,res){
     // security(req,res);userCtrl.authenticateUser(req,res);
     authUser(req,res);hotelCtrl.HotelsList(req,res);

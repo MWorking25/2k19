@@ -575,3 +575,36 @@ exports.getHotelsListOnFilters = function (req, res) {
                 });       
         }); 
 };
+
+
+exports.SavehotelAminities = function (req, res) {
+        connection.acquire(function (err, con) {
+                con.query("UPDATE hotel_master SET aminities =? WHERE id = ?",[JSON.stringify(req.body),parseInt(req.body[0].hotelid)], function (err, result) {
+                    if (err) {
+    
+                        logger.writeLogs({
+                            path: "hotel.controller/SavehotelAminities",
+                            line: "",
+                            message: err
+                        }, 'error');
+    
+                        res.send({
+                            status: 1,
+                            type: "error",
+                            title: "Oops!",
+                            message: "Something went worng, Please try again letter"
+                        });
+                        con.release();
+                    } else {
+                           
+                        res.send({
+                            status: 0,
+                            type: "success",
+                            title: "Done!",
+                            message: "Aminities saved successfully"
+                        });
+                        con.release(); 
+                    }
+                });       
+        }); 
+};
