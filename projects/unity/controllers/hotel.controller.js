@@ -577,6 +577,34 @@ exports.getHotelsListOnFilters = function (req, res) {
 };
 
 
+exports.getHotelsDeatils = function (req, res) {
+        connection.acquire(function (err, con) {
+                con.query("SELECT *,(SELECT areas.name FROM areas WHERE areas.id = hotel_master.area) AS areaname,(SELECT cities.name FROM cities WHERE cities.id = hotel_master.city) AS cityname,(SELECT states.name FROM states WHERE states.id = hotel_master.state) AS statename, (SELECT countries.name FROM countries WHERE countries.id = hotel_master.country) AS countryname,CONCAT('"+fileUrl+"',`bannerimg`) AS bannerinage,IFNULL((SELECT hotel_rooms.price FROM hotel_rooms WHERE hotel_rooms.hotelid = hotel_master.id AND hotel_rooms.price > 0 ORDER BY hotel_rooms.price ASC LIMIT 1),0) as price,IFNULL((SELECT hotel_rooms.discounted_price FROM hotel_rooms WHERE hotel_rooms.hotelid = hotel_master.id AND hotel_rooms.discounted_price > 0 ORDER BY hotel_rooms.discounted_price ASC LIMIT 1),0) as discounted_price FROM `hotel_master` WHERE id = "+parseInt(req.params.hotelid), function (err, result) {
+                    if (err) {
+    
+                        logger.writeLogs({
+                            path: "hotel.controller/getHotelsDeatils",
+                            line: "",
+                            message: err
+                        }, 'error');
+    
+                        res.send({
+                            status: 1,
+                            type: "error",
+                            title: "Oops!",
+                            message: "Something went worng, Please try again letter"
+                        });
+                        con.release();
+                    } else {
+                           
+                        res.send(result);
+                        con.release(); 
+                    }
+                });       
+        }); 
+};
+
+
 exports.SavehotelAminities = function (req, res) {
         connection.acquire(function (err, con) {
                 con.query("UPDATE hotel_master SET aminities =? WHERE id = ?",[JSON.stringify(req.body),parseInt(req.body[0].hotelid)], function (err, result) {
