@@ -234,7 +234,7 @@ exports.RemoveGalleryImage = function (req, res) {
 exports.getCruzDetails = function (req, res) {
     if (req.decoded.success == true) {
        connection.acquire(function (err, con) {
-               con.query("SELECT * FROM `cruze` WHERE `id` = "+req.params.cruzid, function (err, result_cruzDetails) {
+               con.query("SELECT *,CONCAT('"+fileUrl+"',coverpic) AS tempcoverpic FROM `cruze` WHERE `id` = "+req.params.cruzid, function (err, result_cruzDetails) {
                    if (err) {
    
                        logger.writeLogs({
@@ -565,11 +565,17 @@ exports.SaveCruzTimeSlotsDetails = function (req, res) {
 
 exports.uploadCruzImages = function (req, res) {
 
+
+
+    console.log(req.files)
+    console.log(req.body)
+
+ 
    if (req.decoded.success == true) {
        connection.acquire(function (err, con) {
 
-        if (req.files && req.body.description) {
-            var cruzDetails = JSON.parse(req.body.description);
+        if (req.files && req.body.cruzDetails) {
+            var cruzDetails = JSON.parse(req.body.cruzDetails);
             cruzDetails.filename = req.files[0].filename;
         } else {
             var cruzDetails = req.body;
@@ -622,8 +628,7 @@ exports.uploadCruzImages = function (req, res) {
            title: "Oops!",
            message: 'Invalid token.',
        });
-
-   }  
+   }   
 };
 
 

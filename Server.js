@@ -2,6 +2,7 @@ const express = require('express'),
     bodyParser = require('body-parser'),
     env = require('./config/env/env'),
     routes = require('./routes/routers'),
+    path = require('path'),
     cors = require('cors')
     morgan = require('morgan'),
     logger = require('./config/logger'),
@@ -20,9 +21,12 @@ app.use(bodyParser.json({
 }));
 
 
+app.use(express.static(path.join(__dirname, '/public')));
+
+
 //CORS Middleware
 
-app.use(express.static('public'));
+
 
  var originsWhitelist = [
     'http://localhost:4200',      //this is my front-end url for development
@@ -37,14 +41,13 @@ app.use(express.static('public'));
     credentials:true
   }
   //here is the magic
-  app.use(cors(corsOptions)); 
- 
+  app.use(cors(corsOptions));  
 
-  /*  app.use(function(req, res, next) {
+    /* app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
-  });   */
+  });  */  
 
 
 app.use((err,req,res,next) =>{
