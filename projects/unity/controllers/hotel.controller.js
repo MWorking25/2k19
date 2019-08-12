@@ -429,8 +429,23 @@ exports.getHotelDetails = function (req, res) {
                                 });
                                 con.release();
                             } else {
-                                    res.send({hoteldetails:hoteldetails,roomsdetails:roomsdetails});
-                                    con.release();
+                                con.query('SELECT *,CONCAT("'+fileUrl+'",filename) AS tmpfilename FROM `hotel_pics` WHERE `hotelid` =  '+req.params.hotelid, function (err, hotelPics) {
+                                    if (err) {
+                    
+                                        logger.writeLogs({
+                                            path: "hotel.controller/getHotelDetails-hotelPics",
+                                            line: "",
+                                            message: err
+                                        }, 'error');
+                    
+                                        res.send({hoteldetails:hoteldetails,roomsdetails:roomsdetails});
+                                            con.release();
+                                        con.release();
+                                    } else {
+                                            res.send({hoteldetails:hoteldetails,roomsdetails:roomsdetails,hotelPics:hotelPics});
+                                            con.release();
+                                    }
+                                });      
                             }
                         });      
                         
@@ -635,4 +650,112 @@ exports.SavehotelAminities = function (req, res) {
                     }
                 });       
         }); 
+};
+
+
+exports.uploadHotelImages = function (req, res) {
+
+ 
+   if (req.decoded.success == true) {
+       connection.acquire(function (err, con) {
+
+        if (req.files && req.body.hotelDetails) {
+            var hotelDetails = JSON.parse(req.body.hotelDetails);
+            hotelDetails.filename = req.files[0].filename;
+        } else {
+            var hotelDetails = req.body;
+        }
+        
+        if(hotelDetails.id != 0)
+        {
+            var sql = "UPDATE `hotel_pics` SET ?  WHERE `id` = ?";
+            var dataObj = [hotelDetails,hotelDetails.id]
+        }
+        else
+        {
+            hotelDetails.createdby = req.decoded.id;
+            var sql = "INSERT INTO `hotel_pics` SET ?";
+            var dataObj = hotelDetails
+        }
+
+               con.query(sql,dataObj, function (err, result) {
+                   if (err) {
+   
+                       logger.writeLogs({
+                           path: "hotel.controller/uploadHotelImages",
+                           line: "",
+                           message: err
+                       }, 'error');
+   
+                       res.send({
+                           status: 1,
+                           type: "error",
+                           title: "Oops!",
+                           message: "Something went worng, Please try again letter"
+                       });
+                       con.release();
+                   } else {
+                    res.send({
+                        status: 0,
+                        type: "success",
+                        title: "Done!",
+                        message: "Gallery images saved successfully"
+                    });
+                       con.release();
+                   }
+               });       
+       });
+   } else {
+
+       res.send({
+           success: false,
+           type: "error",
+           title: "Oops!",
+           message: 'Invalid token.',
+       });
+   }   
+};
+
+
+exports.RemoveHotelGalleryImage = function (req, res) {
+
+    if (req.decoded.success == true) {
+       connection.acquire(function (err, con) {
+               con.query("DELETE FROM `hotel_pics` WHERE `id` = "+req.params.imgid, function (err, result) {
+                   if (err) {
+   
+                       logger.writeLogs({
+                           path: "hotel.controller/RemoveHotelGalleryImage",
+                           line: "",
+                           message: err
+                       }, 'error');
+   
+                       res.send({
+                           status: 1,
+                           type: "error",
+                           title: "Oops!",
+                           message: "Something went worng, Please try again letter"
+                       });
+                       con.release();
+                   } else {
+                    res.send({
+                        status: 0,
+                        type: "success",
+                        title: "Done!",
+                        message: "Image deleted successfully"
+                    });
+                       con.release();
+                   }
+               });       
+       });
+   } else {
+
+       res.send({
+           success: false,
+           type: "error",
+           title: "Oops!",
+           message: 'Invalid token.',
+       });
+
+   } 
 };

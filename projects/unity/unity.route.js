@@ -237,6 +237,16 @@ unityRouter.post('/SaveCruzAminities/',function(req,res){
     authUser(req,res);expCtrl.SaveCruzAminities(req,res);
 });
 
+unityRouter.get('/RemoveHotelGalleryImage/:imgid',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);hotelCtrl.RemoveHotelGalleryImage(req,res);
+});
+
+unityRouter.post('/uploadHotelImages/',upload.any(),function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);hotelCtrl.uploadHotelImages(req,res);
+});
+
 
 
 module.exports = unityRouter;
