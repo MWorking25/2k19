@@ -247,6 +247,16 @@ unityRouter.post('/uploadHotelImages/',upload.any(),function(req,res){
     authUser(req,res);hotelCtrl.uploadHotelImages(req,res);
 });
 
+unityRouter.get('/RemovevahicalGalleryImage/:imgid',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);cabsCtrl.RemovevahicalGalleryImage(req,res);
+});
+
+unityRouter.post('/uploadvahicalImages/',upload.any(),function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);cabsCtrl.uploadvahicalImages(req,res);
+});
+
 
 
 module.exports = unityRouter;

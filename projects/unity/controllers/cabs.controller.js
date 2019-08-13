@@ -426,3 +426,111 @@ exports.getVehicalDetails = function(req,res)
 
         } 
 };
+
+
+exports.uploadvahicalImages = function (req, res) {
+
+ 
+    if (req.decoded.success == true) {
+        connection.acquire(function (err, con) {
+ 
+         if (req.files && req.body.vahicalDetails) {
+             var vahicalDetails = JSON.parse(req.body.vahicalDetails);
+             vahicalDetails.coverpic = req.files[0].filename;
+         } else {
+             var vahicalDetails = req.body;
+         }
+         
+         if(vahicalDetails.id != 0)
+         {
+             var sql = "UPDATE `vehical_pics` SET ?  WHERE `id` = ?";
+             var dataObj = [vahicalDetails,vahicalDetails.id]
+         }
+         else
+         {
+             vahicalDetails.createdby = req.decoded.id;
+             var sql = "INSERT INTO `vehical_pics` SET ?";
+             var dataObj = vahicalDetails
+         }
+ 
+                con.query(sql,dataObj, function (err, result) {
+                    if (err) {
+    
+                        logger.writeLogs({
+                            path: "hotel.controller/uploadHotelImages",
+                            line: "",
+                            message: err
+                        }, 'error');
+    
+                        res.send({
+                            status: 1,
+                            type: "error",
+                            title: "Oops!",
+                            message: "Something went worng, Please try again letter"
+                        });
+                        con.release();
+                    } else {
+                     res.send({
+                         status: 0,
+                         type: "success",
+                         title: "Done!",
+                         message: "Gallery images saved successfully"
+                     });
+                        con.release();
+                    }
+                });       
+        });
+    } else {
+ 
+        res.send({
+            success: false,
+            type: "error",
+            title: "Oops!",
+            message: 'Invalid token.',
+        });
+    }   
+ };
+ 
+ 
+ exports.RemovevahicalGalleryImage = function (req, res) {
+ 
+     if (req.decoded.success == true) {
+        connection.acquire(function (err, con) {
+                con.query("DELETE FROM `vehical_pics` WHERE `id` = "+req.params.imgid, function (err, result) {
+                    if (err) {
+    
+                        logger.writeLogs({
+                            path: "hotel.controller/RemoveHotelGalleryImage",
+                            line: "",
+                            message: err
+                        }, 'error');
+    
+                        res.send({
+                            status: 1,
+                            type: "error",
+                            title: "Oops!",
+                            message: "Something went worng, Please try again letter"
+                        });
+                        con.release();
+                    } else {
+                     res.send({
+                         status: 0,
+                         type: "success",
+                         title: "Done!",
+                         message: "Image deleted successfully"
+                     });
+                        con.release();
+                    }
+                });       
+        });
+    } else {
+ 
+        res.send({
+            success: false,
+            type: "error",
+            title: "Oops!",
+            message: 'Invalid token.',
+        });
+ 
+    } 
+ };
