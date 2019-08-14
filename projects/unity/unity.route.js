@@ -257,6 +257,50 @@ unityRouter.post('/uploadvahicalImages/',upload.any(),function(req,res){
     authUser(req,res);cabsCtrl.uploadvahicalImages(req,res);
 });
 
+unityRouter.get('/getcabsList/',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);cabsCtrl.getcabsList(req,res);
+});
+
+unityRouter.get('/deletecabDocDetails/:docid',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);cabsCtrl.deletecabDocDetails(req,res);
+});
+
+unityRouter.get('/getcabDetails/:cabid',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);cabsCtrl.getcabDetails(req,res);
+});
+
+unityRouter.post('/savecabDetails/',upload.any(),function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);cabsCtrl.savecabDetails(req,res);
+});
+unityRouter.post('/uploadcabDocs/',upload.any(),function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);cabsCtrl.uploadcabDocs(req,res);
+});
+
+unityRouter.get('/RemoveCabGalleryImage/:imgid',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);cabsCtrl.RemoveCabGalleryImage(req,res);
+});
+
+unityRouter.post('/uploadcabImages/',upload.any(),function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);cabsCtrl.uploadcabImages(req,res);
+});
+
+unityRouter.post('/deleteCabDetails/',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    authUser(req,res);cabsCtrl.deleteCabDetails(req,res);
+});
+
+unityRouter.get('/checkTokenValidation/',function(req,res){
+    // security(req,res);userCtrl.authenticateUser(req,res);
+    userCtrl.checkTokenValidation(req,res);
+});
+
 
 
 module.exports = unityRouter;

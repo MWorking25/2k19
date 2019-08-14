@@ -93,3 +93,48 @@ exports.authenticateUser = function (req, res) {
         });
     } */
 };
+
+
+
+exports.checkTokenValidation = function(req,res)
+   {
+
+    var verificationObject = [{}];
+
+    function getvaluesinObject(passedval) {
+        var charindex = passedval.indexOf("=");
+        var strindex = passedval.length;
+        var field = passedval.substring(0, charindex).trim();
+        var value = passedval.substring(charindex + 1, strindex);
+
+        verificationObject[0][field] = value.trim();
+
+
+    };
+
+    if(req.headers.cookie)
+	{   
+
+        req.headers.cookie.replace(/[^0-9]/g, '');
+            var cookies = req.headers.cookie.split(';', 20);
+			cookies.map(function (value) {
+				getvaluesinObject(value)
+			});
+    // check header or url parameters or post parameters for token
+    var token = verificationObject[0].token;
+    // decode token
+    if (token) {
+        // verifies secret and checks exp
+        jwt.verify(token, app.get('superSecret'), function (err, decoded) {
+            if (err) {
+                res.send({success:false});
+            } else {
+                res.send({success:true});
+            }
+        });
+
+    } else {
+        res.send({success:false});
+    }
+}
+};
